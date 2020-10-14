@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using POC.DAL.Models;
 
-namespace BLL.Interfaces
+namespace POC.BLL.Interfaces
 {
   public interface IEmailSenderService
   {

@@ -3,7 +3,7 @@ using POC.BLL.DTO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BLL.Interfaces
+namespace POC.BLL.Interfaces
 {
   public interface IEmailConfirmService
   {

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using POC.BLL.Model;
 using Microsoft.AspNetCore.Identity;
 
-namespace BLL.Interfaces
+namespace POC.BLL.Interfaces
 {
   public interface IRolesService
   {

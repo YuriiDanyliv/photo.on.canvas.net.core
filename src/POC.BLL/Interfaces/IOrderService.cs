@@ -4,7 +4,7 @@ using POC.BLL.Model;
 using POC.DAL.Entities;
 using POC.DAL.Models;
 
-namespace BLL.Interfaces
+namespace POC.BLL.Interfaces
 {
   public interface IOrderService
   {
