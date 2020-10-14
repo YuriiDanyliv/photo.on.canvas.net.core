@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace WEB.StartupExtensions
+namespace POC.Web
 {
   public static class ServiceExtensions
   {
-    public static void AddDependenciesService(this IServiceCollection services)
+    public static void AddDependencies(this IServiceCollection services)
     {
       services.AddScoped<IUnitOfWork, UnitOfWork>();
       services.AddScoped<IEmailSenderService, EmailSenderService>();
