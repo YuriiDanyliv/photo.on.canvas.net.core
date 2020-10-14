@@ -60,6 +60,8 @@ namespace POC.Web
 
       app.UseAuthorization();
 
+      app.SwaggerMiddleware();
+      
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllers();
