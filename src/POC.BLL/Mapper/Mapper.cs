@@ -1,6 +1,6 @@
 using AutoMapper;
 
-namespace PCO.BLL.Mapper
+namespace POC.BLL.Mapper
 {
   public class ObjMapper
   {

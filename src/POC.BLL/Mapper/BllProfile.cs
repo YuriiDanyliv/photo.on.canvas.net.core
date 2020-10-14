@@ -1,9 +1,9 @@
 using System.Linq;
 using AutoMapper;
-using PCO.BLL.DTO;
-using PCO.DAL.Entities;
+using POC.BLL.DTO;
+using POC.DAL.Entities;
 
-namespace PCO.BLL.Mapper
+namespace POC.BLL.Mapper
 {
   public class BllProfile : Profile
   {
