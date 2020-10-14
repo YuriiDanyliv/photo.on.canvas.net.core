@@ -1,4 +1,4 @@
-using DAL.Repositories;
+using POC.DAL.Models;
 
 namespace POC.BLL.Model
 {
