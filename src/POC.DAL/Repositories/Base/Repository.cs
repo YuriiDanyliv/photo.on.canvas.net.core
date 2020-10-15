@@ -36,13 +36,11 @@ namespace POC.DAL.Repositories
     public void Create(T entity)
     {
       var e = _context.Set<T>().Add(entity);
-      Console.WriteLine("Add", e);
     }
 
     public void Delete(T entity)
     {
       var e =_context.Set<T>().Remove(entity);
-      Console.WriteLine("Remove", e);
     }
 
     public void Update(T entity)
