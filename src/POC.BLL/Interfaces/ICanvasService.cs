@@ -8,7 +8,7 @@ namespace POC.BLL.Interfaces
   public interface ICanvasService
   {
     Task CreateCanvasAsync(CanvasDTO model);
-    Task DeleteCanvasAsync(CanvasDTO model);
+    Task DeleteCanvasByIdAsync(int Id);
     IQueryable<Canvas> GetCanvas();
   }
 }
