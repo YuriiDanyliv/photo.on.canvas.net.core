@@ -5,6 +5,7 @@ using POC.BLL.DTO;
 using POC.BLL.Interfaces;
 using POC.Web.ViewModel;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace POC.Web.Controllers
 {
@@ -27,14 +28,14 @@ namespace POC.Web.Controllers
     }
 
     [HttpPost("GetCanvas")]
-    public IActionResult GetCanvas()
+    public ActionResult<IQueryable<CanvasDTO>> GetCanvas()
     {
       var result = _canvasService.GetCanvas();
       return Ok(result);
     }
 
     [HttpPost("CreateCanvas")]
-    public async Task<IActionResult> CreateCanvas([FromBody] CanvasViewModel model)
+    public async Task<ActionResult> CreateCanvas([FromBody] CanvasViewModel model)
     {
       var mappedModel = _mapper.Map<CanvasDTO>(model);
       await _canvasService.CreateCanvasAsync(mappedModel);

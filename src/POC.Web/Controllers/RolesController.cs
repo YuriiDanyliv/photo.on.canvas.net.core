@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using POC.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 
 namespace WEB.Controllers
 {
@@ -18,7 +19,7 @@ namespace WEB.Controllers
     }
 
     [HttpPost("CreateRole")]
-    public async Task<IActionResult> CreateRole([FromBody] string name)
+    public async Task<ActionResult<IdentityResult>> CreateRole([FromBody] string name)
     {
       var result = await _rolesService.CreateRoleAsync(name);
       if (result.Succeeded) return Ok(result);
@@ -27,7 +28,7 @@ namespace WEB.Controllers
     }
 
     [HttpPost("DeleteRole")]
-    public async Task<IActionResult> DeleteRole([FromBody] string id)
+    public async Task<ActionResult<IdentityResult>> DeleteRole([FromBody] string id)
     {
       var result = await _rolesService.DeleteRoleAsync(id);
       if (result.Succeeded) return Ok(result);
@@ -36,21 +37,21 @@ namespace WEB.Controllers
     }
 
     [HttpPost("GetRoles")]
-    public IActionResult GetRoles()
+    public ActionResult<IdentityResult> GetRoles()
     {
       var result = _rolesService.GetRoles();
       return Ok(result);
     }
 
     [HttpPost("GetUserRoles")]
-    public async Task<IActionResult> GetUserRoles([FromBody] string userId)
+    public async Task<ActionResult<IdentityResult>> GetUserRoles([FromBody] string userId)
     {
       var result = await _rolesService.GetUserRolesAsync(userId);
       return Ok(result);
     }
 
     [HttpPost("EditUserRoles")]
-    public async Task<IActionResult> EditUserRoles([FromBody] string userId, List<string> roles)
+    public async Task<ActionResult<IdentityResult>> EditUserRoles([FromBody] string userId, List<string> roles)
     {
       var result = await _rolesService.EditUserRolesAsync(userId, roles);
       if (result.AddResult.Succeeded && result.RemoveResult.Succeeded) return Ok();

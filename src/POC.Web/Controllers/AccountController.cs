@@ -7,6 +7,7 @@ using POC.BLL.DTO;
 using POC.Web.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using POC.BLL.Interfaces;
+using System.Linq;
 
 namespace POC.Web.Controllers
 {
@@ -32,16 +33,16 @@ namespace POC.Web.Controllers
     }
 
     [HttpPost("GetUsers")]
-    public System.Linq.IQueryable<UserDTO> GetUsers()
+    public ActionResult<IQueryable<UserDTO>> GetUsers()
     {
       var result = _accountService.GetUsers();
 
       _logger.LogInformation("Get users action executed");
-      return(result);
+      return Ok(result);
     }
 
     [HttpPost("DeleteUser")]
-    public async Task<IActionResult> DeleteUser([FromBody] string userId)
+    public async Task<ActionResult<IdentityResult>> DeleteUser([FromBody] string userId)
     {
       var result = await _accountService.DeleteUserAsync(userId);
       if (result.Succeeded) return Ok(result);
@@ -50,7 +51,7 @@ namespace POC.Web.Controllers
     }
 
     [HttpPost("Register")]
-    public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
+    public async Task<ActionResult<IdentityResult>> Register([FromBody] RegisterViewModel model)
     {
       if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -60,7 +61,8 @@ namespace POC.Web.Controllers
       if (result.Succeeded)
       {
         //await _emailConfirmService.SendConfirmEmailAsync(userModel, Url);
-        return Ok("follow the link provided in the email");
+        //return Ok("follow the link provided in the email");
+        return Ok(result);
       }
 
       return BadRequest(result.Errors);
@@ -68,7 +70,7 @@ namespace POC.Web.Controllers
 
     [HttpGet("ConfirmEmail")]
     [AllowAnonymous]
-    public async Task<IActionResult> ConfirmEmail(string userId, string token)
+    public async Task<ActionResult<IdentityResult>> ConfirmEmail(string userId, string token)
     {
       if (userId == null || token == null) return BadRequest("Error: user Id == null or token == null");
 
@@ -79,7 +81,7 @@ namespace POC.Web.Controllers
     }
 
     [HttpPost("Login")]
-    public async Task<IActionResult> Login([FromBody] LoginViewModel model)
+    public async Task<ActionResult<IdentityResult>> Login([FromBody] LoginViewModel model)
     {
       if (!ModelState.IsValid) return BadRequest(ModelState);
       var mappedModel = _mapper.Map<UserAuthDTO>(model);
@@ -94,6 +96,9 @@ namespace POC.Web.Controllers
     }
 
     [HttpPost("Logout")]
-    public async Task Logout() => await _accountService.LogoutAsync();
+    public async Task<ActionResult> Logout() {
+      await _accountService.LogoutAsync();
+      return Ok();
+    }
   }
 }
