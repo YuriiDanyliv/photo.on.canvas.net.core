@@ -16,6 +16,6 @@ namespace POC.Web.ViewModel
     public string imgURL { get; set; }
 
     [Required(ErrorMessage = "Необхідно вказати тип полотна")]
-    public CanvasViewModel Canvas { get; set; }
+    public int CanvasId { get; set; }
   }
 }

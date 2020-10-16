@@ -24,10 +24,10 @@ namespace POC.BLL.Services
       await _unitOfWork.SaveAsync();
     }
 
-    public async Task DeleteCanvasAsync(CanvasDTO model)
+    public async Task DeleteCanvasByIdAsync(int Id)
     {
-      var mappedModel = ObjMapper.Map<CanvasDTO, Canvas>(model);
-      _unitOfWork.Canvas.Delete(mappedModel);
+      var canvas = await _unitOfWork.Canvas.FindByIdAsync(Id);
+      _unitOfWork.Canvas.Delete(canvas);
       await _unitOfWork.SaveAsync();
     }
 

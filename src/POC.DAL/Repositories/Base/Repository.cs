@@ -6,6 +6,7 @@ using POC.DAL.Context;
 using POC.DAL.Interfaces;
 using POC.DAL.Models;
 using POC.DAL.Entities;
+using System.Threading.Tasks;
 
 namespace POC.DAL.Repositories
 {
@@ -28,7 +29,12 @@ namespace POC.DAL.Repositories
       return _context.Set<T>().Where(expression).AsNoTracking();
     }
 
-    public PagesList<T> GetByQueryParam(QueryParameters parameters)
+    public async Task<T> FindByIdAsync(int Id)
+    {
+      return await _context.Set<T>().FirstOrDefaultAsync(i => i.Id == Id);
+    }
+
+    public virtual PagesList<T> GetByQueryParam(QueryParameters parameters)
     {
       return PagesList<T>.GetPagesList(FindAll(), parameters.PageNumber, parameters.PageSize);
     }

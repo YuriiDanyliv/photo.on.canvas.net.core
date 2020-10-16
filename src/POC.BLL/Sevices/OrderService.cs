@@ -18,15 +18,23 @@ namespace POC.BLL.Services
       _unitOfWork = unitOfWork;
     }
 
+    public async Task DeleteOrderByIdAsync(int Id)
+    {
+      var order = await _unitOfWork.Order.FindByIdAsync(Id);
+      _unitOfWork.Order.Delete(order);
+      await _unitOfWork.SaveAsync();
+    }
+
     public PagesList<Order> GetOrderPagesList(OrderParameters parameters)
     {
       return _unitOfWork.Order.GetByQueryParam(parameters);
     }
 
-    public async Task MakeOrderAsync(OrderDTO order)
+    public async Task MakeOrderAsync(OrderDTO orderDTO)
     {
-      var mappedModel = ObjMapper.Map<OrderDTO, Order>(order);
-      _unitOfWork.Order.Create(mappedModel);
+      var order = ObjMapper.Map<OrderDTO, Order>(orderDTO);
+      order.Canvas = await _unitOfWork.Canvas.FindByIdAsync(orderDTO.CanvasId);
+      _unitOfWork.Order.Create(order);
       await _unitOfWork.SaveAsync();
     }
   }

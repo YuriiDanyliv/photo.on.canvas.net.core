@@ -44,12 +44,10 @@ namespace POC.Web.Controllers
       return Ok();
     }
 
-    [HttpPost("DeleteCanvas")]
-    public IActionResult DeleteCanvas([FromBody] CanvasViewModel model)
+    [HttpGet("DeleteCanvas")]
+    public async Task<ActionResult> DeleteCanvasById([FromQuery] int Id)
     {
-      var mappedModel = _mapper.Map<CanvasDTO>(model);
-      _canvasService.DeleteCanvasAsync(mappedModel);
-
+      await _canvasService.DeleteCanvasByIdAsync(Id);
       return Ok();
     }
   }

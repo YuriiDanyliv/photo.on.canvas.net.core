@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using POC.DAL.Models;
 
 namespace POC.DAL.Interfaces
@@ -9,6 +10,7 @@ namespace POC.DAL.Interfaces
   {
     IQueryable<T> FindAll();
     IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression);
+    Task<T> FindByIdAsync(int Id);
     PagesList<T> GetByQueryParam(QueryParameters parameters);
     void Create(T entity);
     void Update(T entity);
