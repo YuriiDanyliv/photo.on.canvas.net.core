@@ -20,7 +20,7 @@ namespace POC.DAL.Context
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
       optionsBuilder.UseMySql(_config.GetConnectionString("MySQLServerConnection"),
-      cfg => cfg.MigrationsAssembly("WEB"));
+      cfg => cfg.MigrationsAssembly("POC.Web"));
     }
   }
 }
