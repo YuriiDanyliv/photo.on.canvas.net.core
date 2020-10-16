@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using POC.BLL.DTO;
 using POC.BLL.Interfaces;
 using POC.BLL.Mapper;
@@ -17,10 +18,10 @@ namespace POC.BLL.Services
       _unitOfWork = unitOfWork;
     }
 
-    public async Task CreateCanvasAsync(CanvasDTO model)
+    public async Task CreateCanvasAsync(CanvasDTO canvasDTO)
     {
-      var mappedModel = ObjMapper.Map<CanvasDTO, Canvas>(model);
-      _unitOfWork.Canvas.Create(mappedModel);
+      var canvas = ObjMapper.Map<CanvasDTO, Canvas>(canvasDTO);
+      _unitOfWork.Canvas.Create(canvas);
       await _unitOfWork.SaveAsync();
     }
 
@@ -31,9 +32,9 @@ namespace POC.BLL.Services
       await _unitOfWork.SaveAsync();
     }
 
-    public IQueryable<Canvas> GetCanvas()
+    public IQueryable<CanvasDTO> GetCanvas()
     {
-      var result = _unitOfWork.Canvas.FindAll();
+      var result = _unitOfWork.Canvas.FindAll().ProjectTo<CanvasDTO>(ObjMapper.configuration);
       return result;
     }
   }
