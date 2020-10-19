@@ -4,6 +4,7 @@ using AutoMapper;
 using POC.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using POC.Web.ViewModel;
 
 namespace WEB.Controllers
 {
@@ -37,16 +38,16 @@ namespace WEB.Controllers
     }
 
     [HttpPost("GetRoles")]
-    public ActionResult<IdentityResult> GetRoles()
+    public ActionResult<IdentityRole> GetRoles()
     {
       var result = _rolesService.GetRoles();
       return Ok(result);
     }
 
     [HttpPost("GetUserRoles")]
-    public async Task<ActionResult<IdentityResult>> GetUserRoles([FromBody] string userId)
+    public async Task<ActionResult<UserViewModel>> GetUserRoles([FromBody] string userId)
     {
-      var result = await _rolesService.GetUserRolesAsync(userId);
+      var result = _mapper.Map<UserViewModel>(await _rolesService.GetUserRolesAsync(userId));
       return Ok(result);
     }
 
