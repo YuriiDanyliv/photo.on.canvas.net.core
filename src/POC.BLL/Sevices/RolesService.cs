@@ -5,6 +5,7 @@ using POC.BLL.Interfaces;
 using POC.BLL.Model;
 using POC.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
+using POC.BLL.DTO;
 
 namespace POC.BLL.Services
 {
@@ -39,18 +40,18 @@ namespace POC.BLL.Services
       return result;
     }
 
-    public async Task<UserRolesModel> GetUserRolesAsync(string userId)
+    public async Task<UserDataDTO> GetUserRolesAsync(string userId)
     {
       User user = await _userManager.FindByIdAsync(userId);
       var userRoles = await _userManager.GetRolesAsync(user);
       var allRoles = _roleManager.Roles.ToList();
 
-      UserRolesModel model = new UserRolesModel
+      var model = new UserDataDTO
       {
-        UserId = user.Id,
-        UserEmail = user.Email,
-        UserRoles = userRoles,
-        AllRoles = allRoles
+        Id = user.Id,
+        Name = user.UserName,
+        Email = user.Email,
+        Roles = userRoles
       };
 
       return model;
