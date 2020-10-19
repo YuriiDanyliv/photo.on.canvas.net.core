@@ -5,6 +5,7 @@ using POC.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using POC.Web.ViewModel;
+using PCO.Web.ViewModel;
 
 namespace WEB.Controllers
 {
@@ -52,9 +53,9 @@ namespace WEB.Controllers
     }
 
     [HttpPost("EditUserRoles")]
-    public async Task<ActionResult<IdentityResult>> EditUserRoles([FromBody] string userId, List<string> roles)
+    public async Task<ActionResult<IdentityResult>> EditUserRoles([FromBody] EditRolesViewModel model)
     {
-      var result = await _rolesService.EditUserRolesAsync(userId, roles);
+      var result = await _rolesService.EditUserRolesAsync(model.UserId, model.Roles);
       if (result.AddResult.Succeeded && result.RemoveResult.Succeeded) return Ok();
 
       return BadRequest(result);
