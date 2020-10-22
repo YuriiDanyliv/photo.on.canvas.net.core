@@ -11,7 +11,7 @@ namespace POC.BLL.Interfaces
     List<IdentityRole> GetRoles();
     Task<IdentityResult> CreateRoleAsync(string name);
     Task<IdentityResult> DeleteRoleAsync(string id);
-    Task<UserDataDTO> GetUserRolesAsync(string userId);
+    Task<IList<string>> GetUserRolesAsync(string userId);
     Task<EditUserRolesResultModel> EditUserRolesAsync(string userId, List<string> roles);
   }
 }

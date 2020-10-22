@@ -40,21 +40,12 @@ namespace POC.BLL.Services
       return result;
     }
 
-    public async Task<UserDataDTO> GetUserRolesAsync(string userId)
+    public async Task<IList<string>> GetUserRolesAsync(string userId)
     {
       User user = await _userManager.FindByIdAsync(userId);
       var userRoles = await _userManager.GetRolesAsync(user);
-      var allRoles = _roleManager.Roles.ToList();
 
-      var model = new UserDataDTO
-      {
-        Id = user.Id,
-        Name = user.UserName,
-        Email = user.Email,
-        Roles = userRoles
-      };
-
-      return model;
+      return userRoles;
     }
 
     public async Task<EditUserRolesResultModel> EditUserRolesAsync(string userId, List<string> roles)
