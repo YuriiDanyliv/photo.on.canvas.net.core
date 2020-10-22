@@ -6,8 +6,10 @@ using POC.DAL.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using POC.BLL.Models;
+using Microsoft.Extensions.Configuration;
 
-namespace POC.Web
+namespace POC.Web.Config
 {
   public static class ServiceExtensions
   {
@@ -20,6 +22,7 @@ namespace POC.Web
       services.AddScoped<IOrderService, OrderService>();
       services.AddScoped<ICanvasService, CanvasService>();
       services.AddScoped<IRolesService, RolesService>();
+      services.AddScoped<IConfigurationService, ConfigurationService>();
     }
 
     public static void IdentityConfiguration(this IServiceCollection services)
@@ -33,11 +36,6 @@ namespace POC.Web
         options.Password.RequiredLength = 6;
         options.Password.RequiredUniqueChars = 0;
       });
-    }
-
-    public static void EmailConfigService(this IServiceCollection services, EmailConfiguration emailConfig)
-    {
-      services.AddSingleton(emailConfig);
     }
 
     public static void SwashBuckleConfigService(this IServiceCollection services)

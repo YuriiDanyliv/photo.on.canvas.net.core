@@ -3,16 +3,19 @@ using POC.BLL.Interfaces;
 using POC.DAL.Models;
 using MailKit.Net.Smtp;
 using MimeKit;
+using POC.BLL.Models;
 
 namespace POC.BLL.Services
 {
   public class EmailSenderService : IEmailSenderService
   {
-    private readonly EmailConfiguration _emailConfig;
+    private readonly IConfigurationService _cfgService;
+    private readonly EmailServiceConfig _emailConfig;
 
-    public EmailSenderService(EmailConfiguration emailConfig)
+    public EmailSenderService(IConfigurationService cfgService)
     {
-      _emailConfig = emailConfig;
+      _cfgService = cfgService;
+      _emailConfig = _cfgService.GetEmailConfig();
     }
 
     public void SendEmail(EmailMessage message)

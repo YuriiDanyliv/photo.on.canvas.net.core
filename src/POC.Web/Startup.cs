@@ -1,34 +1,31 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using POC.DAL.Models;
+using POC.Web.Config;
 
 namespace POC.Web
 {
   public class Startup
   {
-    public Startup(IConfiguration configuration)
+    public Startup()
     {
-      Configuration = configuration;
+      var builder = new ConfigurationBuilder()
+      .AddJsonFile("appsettings.json");
+
+      _configuration = builder.Build();
     }
 
-    public IConfiguration Configuration { get; }
+    public IConfiguration _configuration { get; }
     public ILogger _logger { get; set; }
     
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddSingleton<IConfiguration>(Configuration);
+      services.AddSingleton<IConfiguration>(_configuration);
       services.AddDependencies();
 
       services.AddDbContext<DAL.Context.EFContext>();
@@ -36,9 +33,9 @@ namespace POC.Web
       .AddEntityFrameworkStores<DAL.Context.EFContext>();
       services.AddAutoMapper(typeof(Startup));
       services.IdentityConfiguration();
-      services.EmailConfigService(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
       services.SwashBuckleConfigService();
       
+      services.AddCors();
       services.AddControllers()
       .AddNewtonsoftJson(cfg =>
       cfg.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -53,13 +50,12 @@ namespace POC.Web
       }
 
       app.ConfigureExceptionHandler(logger);
-      
       app.UseHttpsRedirection();
-
       app.UseRouting();
-
+      app.UseCors(
+        builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
+      );
       app.UseAuthorization();
-
       app.SwaggerMiddleware();
       
       app.UseEndpoints(endpoints =>
