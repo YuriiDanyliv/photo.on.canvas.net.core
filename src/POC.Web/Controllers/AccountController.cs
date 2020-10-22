@@ -38,9 +38,9 @@ namespace POC.Web.Controllers
     }
 
     [HttpPost("GetUsers")]
-    public ActionResult<IQueryable<UserDTO>> GetUsers()
+    public ActionResult<DAL.Models.PagesList<UserDTO>> GetUsers(UserQueryParam param)
     {
-      var result = _accountService.GetUsers();
+      var result = _accountService.GetUsers(param);
 
       return Ok(result);
     }

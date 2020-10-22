@@ -6,6 +6,8 @@ using POC.BLL.Interfaces;
 using System.Linq;
 using POC.BLL.Mapper;
 using AutoMapper.QueryableExtensions;
+using POC.DAL.Models;
+using POC.BLL.Model;
 
 namespace POC.BLL.Services
 {
@@ -20,11 +22,12 @@ namespace POC.BLL.Services
       _signInManager = signInManager;
     }
 
-    public IQueryable<UserDTO> GetUsers()
+    public PagesList<UserDTO> GetUsers(UserQueryParam param)
     {
-      var result = _userManager.Users.ProjectTo<UserDTO>(ObjMapper.configuration);
+      var users = _userManager.Users.ProjectTo<UserDTO>(ObjMapper.configuration);
+      var usersList = PagesList<UserDTO>.GetPagesList(users, param.PageNumber, param.PageSize);
 
-      return result;
+      return usersList;
     }
 
     public async Task<IdentityResult> DeleteUserAsync(string userId)
