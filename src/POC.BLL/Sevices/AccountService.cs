@@ -15,17 +15,27 @@ namespace POC.BLL.Services
   {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
+    private readonly IRolesService _rolesService;
 
-    public AccountService(UserManager<User> userManager, SignInManager<User> signInManager)
+    public AccountService(
+      UserManager<User> userManager, 
+      SignInManager<User> signInManager,
+      IRolesService rolesService)
     {
       _userManager = userManager;
       _signInManager = signInManager;
+      _rolesService = rolesService;
     }
 
     public PagesList<UserDTO> GetUsers(UserQueryParam param)
     {
       var users = _userManager.Users.ProjectTo<UserDTO>(ObjMapper.configuration);
       var usersList = PagesList<UserDTO>.GetPagesList(users, param.PageNumber, param.PageSize);
+
+      foreach (var user in usersList)
+      {
+        user.Roles = _rolesService.GetUserRolesAsync(user.Id).Result;
+      }
 
       return usersList;
     }
