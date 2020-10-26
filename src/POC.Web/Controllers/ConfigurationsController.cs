@@ -7,6 +7,8 @@ using POC.BLL.Models;
 
 namespace POC.Web.Controllers
 {
+  [Route("api/[controller]")]
+  [ApiController]
   public class ConfigurationController : Controller
   {
     public IConfigurationService _cfgService { get; set; }

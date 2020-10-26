@@ -9,6 +9,8 @@ using PCO.Web.ViewModel;
 
 namespace WEB.Controllers
 {
+  [Route("api/[controller]")]
+  [ApiController]
   public class RolesController : Controller
   {
     private readonly IRolesService _rolesService;
@@ -38,7 +40,7 @@ namespace WEB.Controllers
       return BadRequest(result.Errors);
     }
 
-    [HttpPost("GetRoles")]
+    [HttpGet("GetRoles")]
     public ActionResult<IdentityRole> GetRoles()
     {
       var result = _rolesService.GetRoles();
