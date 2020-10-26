@@ -12,7 +12,7 @@ namespace POC.BLL.Mapper
       CreateMap<User, UserDTO>();
       CreateMap<UserAuthDTO, User>();
       CreateMap<OrderDTO, Order>();
-      CreateMap<CanvasDTO, Canvas>();
+      CreateMap<CanvasDTO, Canvas>().ReverseMap();
     }
   }
 }

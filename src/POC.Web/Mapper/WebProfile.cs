@@ -10,8 +10,14 @@ namespace POC.Web.Mapper
     {
       CreateMap<LoginViewModel, UserAuthDTO>();
       CreateMap<RegisterViewModel, UserAuthDTO>();
+
       CreateMap<OrderViewModel, OrderDTO>();
+
       CreateMap<CanvasViewModel, CanvasDTO>();
+      CreateMap<CanvasDTO, CanvasViewModel>()
+      .ForMember("Name", opt => opt.MapFrom(
+        i => "Розмір: " + i.Size + ", Ціна: " + i.Price.ToString("C"))
+      );
     }
   }
 }

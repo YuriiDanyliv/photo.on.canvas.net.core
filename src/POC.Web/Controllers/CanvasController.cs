@@ -6,6 +6,7 @@ using POC.BLL.Interfaces;
 using POC.Web.ViewModel;
 using System.Threading.Tasks;
 using System.Linq;
+using AutoMapper.QueryableExtensions;
 
 namespace POC.Web.Controllers
 {
@@ -27,10 +28,10 @@ namespace POC.Web.Controllers
       _mapper = mapper;
     }
 
-    [HttpPost("GetCanvas")]
-    public ActionResult<IQueryable<CanvasDTO>> GetCanvas()
+    [HttpGet("GetCanvas")]
+    public ActionResult<IQueryable<CanvasViewModel>> GetCanvas()
     {
-      var result = _canvasService.GetCanvas();
+      var result = _canvasService.GetCanvas().ProjectTo<CanvasViewModel>(_mapper.ConfigurationProvider);
       return Ok(result);
     }
 
@@ -45,8 +46,8 @@ namespace POC.Web.Controllers
       return Ok();
     }
 
-    [HttpGet("DeleteCanvas")]
-    public async Task<ActionResult> DeleteCanvasById([FromQuery] int Id)
+    [HttpPost("DeleteCanvas")]
+    public async Task<ActionResult> DeleteCanvasById([FromBody] int Id)
     {
       await _canvasService.DeleteCanvasByIdAsync(Id);
       return Ok();
