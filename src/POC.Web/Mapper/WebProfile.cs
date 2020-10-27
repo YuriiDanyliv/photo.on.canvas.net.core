@@ -1,11 +1,13 @@
 using AutoMapper;
 using POC.BLL.DTO;
+using POC.DAL.Entities;
+using POC.DAL.Models;
 using POC.Web.ViewModel;
 
 namespace POC.Web.Mapper
 {
-  public class WebProfile: Profile 
-  {  
+  public class WebProfile : Profile
+  {
     public WebProfile()
     {
       CreateMap<LoginViewModel, UserAuthDTO>();
@@ -13,10 +15,20 @@ namespace POC.Web.Mapper
 
       CreateMap<OrderViewModel, OrderDTO>();
 
+      CreateMap<Canvas, CanvasViewModel>()
+      .ForMember
+      (
+        dest => dest.Name,
+        opt => opt.MapFrom(src => "Розмір: " + src.Size + ", Ціна: " + src.Price.ToString("C"))
+      );
+
       CreateMap<CanvasViewModel, CanvasDTO>();
+      
       CreateMap<CanvasDTO, CanvasViewModel>()
-      .ForMember("Name", opt => opt.MapFrom(
-        i => "Розмір: " + i.Size + ", Ціна: " + i.Price.ToString("C"))
+      .ForMember
+      (
+        dest => dest.Name,
+        opt => opt.MapFrom(src => "Розмір: " + src.Size + ", Ціна: " + src.Price.ToString("C"))
       );
     }
   }

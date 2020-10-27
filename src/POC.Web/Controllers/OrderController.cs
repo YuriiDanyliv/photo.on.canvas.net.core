@@ -6,6 +6,7 @@ using POC.BLL.DTO;
 using POC.BLL.Model;
 using POC.BLL.Interfaces;
 using POC.Web.ViewModel;
+using System.Linq;
 
 namespace Web.Controllers
 {
@@ -28,9 +29,20 @@ namespace Web.Controllers
     }
 
     [HttpPost("GetOrders")]
-    public ActionResult<POC.DAL.Models.PagesList<POC.DAL.Entities.Order>> GetOrders([FromBody] OrderParameters parameters)
+    public ActionResult<OrderResponseViewModel> GetOrders([FromBody] OrderParameters parameters)
     {
-      var result = _orderService.GetOrderPagesList(parameters);
+      var result = _orderService.GetOrderPagesList(parameters)
+      .Select(x => new OrderResponseViewModel() 
+      { 
+        Id = x.Id.ToString(),
+        CustomerName = x.CustomerName,
+        Address = x.Address,
+        PhoneNumber = x.PhoneNumber,
+        imgURL = x.imgURL,
+        Canvas = _mapper.Map<CanvasViewModel>(x.Canvas)
+      })
+      .ToList();
+
       return Ok(result);
     }
 
