@@ -10,7 +10,7 @@ namespace POC.DAL.Interfaces
   {
     IQueryable<T> FindAll();
     IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression);
-    Task<T> FindByIdAsync(int Id);
+    Task<T> FindByIdAsync(string Id);
     PagesList<T> GetByQueryParam(QueryParameters parameters);
     void Create(T entity);
     void Update(T entity);

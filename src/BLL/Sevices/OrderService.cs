@@ -18,7 +18,7 @@ namespace POC.BLL.Services
       _unitOfWork = unitOfWork;
     }
 
-    public async Task DeleteOrderByIdAsync(int Id)
+    public async Task DeleteOrderByIdAsync(string Id)
     {
       var order = await _unitOfWork.Order.FindByIdAsync(Id);
       _unitOfWork.Order.Delete(order);

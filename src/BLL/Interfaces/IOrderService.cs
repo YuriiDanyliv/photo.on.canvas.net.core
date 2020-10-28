@@ -10,6 +10,6 @@ namespace POC.BLL.Interfaces
   {
     PagesList<Order> GetOrderPagesList(OrderParameters parameters);
     Task MakeOrderAsync(OrderDTO order);
-    Task DeleteOrderByIdAsync(int Id);
+    Task DeleteOrderByIdAsync(string Id);
   }
 }

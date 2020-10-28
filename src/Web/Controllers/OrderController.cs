@@ -58,7 +58,7 @@ namespace Web.Controllers
     }
 
     [HttpPost("DeleteOrder")]
-    public async Task<ActionResult> DeleteOrder([FromBody] int Id)
+    public async Task<ActionResult> DeleteOrder([FromBody] string Id)
     {
       await _orderService.DeleteOrderByIdAsync(Id);
       return Ok();

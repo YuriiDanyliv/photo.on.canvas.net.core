@@ -25,7 +25,7 @@ namespace POC.BLL.Services
       await _unitOfWork.SaveAsync();
     }
 
-    public async Task DeleteCanvasByIdAsync(int Id)
+    public async Task DeleteCanvasByIdAsync(string Id)
     {
       var canvas = await _unitOfWork.Canvas.FindByIdAsync(Id);
       _unitOfWork.Canvas.Delete(canvas);

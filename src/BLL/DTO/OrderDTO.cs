@@ -8,6 +8,6 @@ namespace POC.BLL.DTO
     public string Address { get; set; }
     public string imgURL { get; set; }
     public CanvasDTO Canvas { get; set; }
-    public int CanvasId { get; set; }
+    public string CanvasId { get; set; }
   }
 }

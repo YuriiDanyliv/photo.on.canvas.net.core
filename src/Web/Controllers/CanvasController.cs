@@ -47,7 +47,7 @@ namespace POC.Web.Controllers
     }
 
     [HttpPost("DeleteCanvas")]
-    public async Task<ActionResult> DeleteCanvasById([FromBody] int Id)
+    public async Task<ActionResult> DeleteCanvasById([FromBody] string Id)
     {
       await _canvasService.DeleteCanvasByIdAsync(Id);
       return Ok();

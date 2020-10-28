@@ -29,7 +29,7 @@ namespace POC.DAL.Repositories
       return _context.Set<T>().Where(expression).AsNoTracking();
     }
 
-    public async Task<T> FindByIdAsync(int Id)
+    public async Task<T> FindByIdAsync(string Id)
     {
       return await _context.Set<T>().FirstOrDefaultAsync(i => i.Id == Id);
     }
