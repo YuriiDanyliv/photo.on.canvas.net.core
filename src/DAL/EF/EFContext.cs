@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,7 @@ namespace POC.DAL.Context
     public EFContext(IConfiguration config) : base()
     {
       _config = config;
+      Database.EnsureCreated();
     }
 
     public DbSet<Canvas> Canvas { get; set; }
