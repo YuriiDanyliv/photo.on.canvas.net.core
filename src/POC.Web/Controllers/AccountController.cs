@@ -37,8 +37,8 @@ namespace POC.Web.Controllers
       _mapper = mapper;
     }
 
-    [HttpPost("GetUsers")]
-    public ActionResult<DAL.Models.PagesList<UserDTO>> GetUsers(UserQueryParam param)
+    [HttpGet("GetUsers")]
+    public ActionResult<DAL.Models.PagesList<UserDTO>> GetUsers([FromQuery] UserQueryParam param)
     {
       var result = _accountService.GetUsers(param);
 
