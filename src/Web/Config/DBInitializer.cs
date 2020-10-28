@@ -6,21 +6,18 @@ namespace POC.Web.Config
 {
   public class DBInitializer
   {
-    private readonly UserManager<User> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
-
     public static async Task InitializeAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
     {
       string adminEmail = "Yura@mail.com";
       string password = "11111111q";
+      var roles = new string[] {"admin", "user"};
 
-      if (await roleManager.FindByNameAsync("admin") == null)
+      foreach(var role in roles)
       {
-        await roleManager.CreateAsync(new IdentityRole("admin"));
-      }
-      if (await roleManager.FindByNameAsync("user") == null)
-      {
-        await roleManager.CreateAsync(new IdentityRole("user"));
+        if (await roleManager.FindByNameAsync(role) == null)
+        {
+          await roleManager.CreateAsync(new IdentityRole(role));
+        }
       }
       
       if (await userManager.FindByNameAsync(adminEmail) == null)
