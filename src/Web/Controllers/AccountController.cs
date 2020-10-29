@@ -7,7 +7,6 @@ using POC.BLL.DTO;
 using POC.Web.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using POC.BLL.Interfaces;
-using System.Linq;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 using POC.BLL.Model;
 
@@ -38,9 +37,9 @@ namespace POC.Web.Controllers
     }
 
     [HttpGet("GetUsers")]
-    public ActionResult<DAL.Models.PagesList<UserDTO>> GetUsers([FromQuery] UserQueryParam param)
+    public ActionResult<PagesViewModel<UserDTO>> GetUsers([FromQuery] UserQueryParam param)
     {
-      var result = _accountService.GetUsers(param);
+      var result = _mapper.Map<PagesViewModel<UserDTO>>(_accountService.GetUsers(param));
 
       return Ok(result);
     }
@@ -64,7 +63,7 @@ namespace POC.Web.Controllers
 
       if (result.Succeeded)
       {
-        if(_configService.GetEmailConfig().ServiceIsOn)
+        if (_configService.GetEmailConfig().ServiceIsOn)
         {
           await _emailConfirmService.SendConfirmEmailAsync(mappedModel, Url);
           return Ok("follow the link provided in the email");
@@ -93,7 +92,7 @@ namespace POC.Web.Controllers
       if (!ModelState.IsValid) return BadRequest(ModelState);
       var mappedModel = _mapper.Map<UserAuthDTO>(model);
 
-      if(_configService.GetEmailConfig().ServiceIsOn)
+      if (_configService.GetEmailConfig().ServiceIsOn)
       {
         var isEmailConfirmed = await _emailConfirmService.ValidateConfirmedEmailAsync(mappedModel);
         if (!isEmailConfirmed) return BadRequest(new { msg = "Email not confirmed" });
@@ -106,7 +105,8 @@ namespace POC.Web.Controllers
     }
 
     [HttpPost("Logout")]
-    public async Task<ActionResult> Logout() {
+    public async Task<ActionResult> Logout()
+    {
       await _accountService.LogoutAsync();
       return Ok();
     }

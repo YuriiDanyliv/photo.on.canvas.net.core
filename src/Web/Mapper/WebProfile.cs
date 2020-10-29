@@ -11,9 +11,12 @@ namespace POC.Web.Mapper
     public WebProfile()
     {
       CreateMap<LoginViewModel, UserAuthDTO>();
+
       CreateMap<RegisterViewModel, UserAuthDTO>();
 
       CreateMap<OrderViewModel, OrderDTO>();
+
+      CreateMap<CanvasViewModel, CanvasDTO>();
 
       CreateMap<Canvas, CanvasViewModel>()
       .ForMember
@@ -21,14 +24,19 @@ namespace POC.Web.Mapper
         dest => dest.Name,
         opt => opt.MapFrom(src => "Розмір: " + src.Size + ", Ціна: " + src.Price.ToString("C"))
       );
-
-      CreateMap<CanvasViewModel, CanvasDTO>();
       
       CreateMap<CanvasDTO, CanvasViewModel>()
       .ForMember
       (
         dest => dest.Name,
         opt => opt.MapFrom(src => "Розмір: " + src.Size + ", Ціна: " + src.Price.ToString("C"))
+      );
+
+      CreateMap<PagesList<UserDTO>, PagesViewModel<UserDTO>>()
+      .ForMember
+      (
+        dest => dest.data,
+        opt => opt.MapFrom(src => src.ToArray())
       );
     }
   }
