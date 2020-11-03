@@ -22,6 +22,7 @@ namespace POC.Web.Config
       services.AddScoped<IOrderService, OrderService>();
       services.AddScoped<ICanvasService, CanvasService>();
       services.AddScoped<IRolesService, RolesService>();
+      services.AddScoped<IFileService, FileService>();
       services.AddScoped<IConfigurationService, ConfigurationService>();
     }
 

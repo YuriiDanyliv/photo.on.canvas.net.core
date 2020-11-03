@@ -9,7 +9,7 @@ namespace POC.BLL.Interfaces
   public interface IOrderService
   {
     PagesList<Order> GetOrderPagesList(OrderParameters parameters);
-    Task MakeOrderAsync(OrderDTO order);
+    Task MakeOrderAsync(CreateOrder createOrder);
     Task DeleteOrderByIdAsync(string Id);
   }
 }

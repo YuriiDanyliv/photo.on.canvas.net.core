@@ -1,5 +1,6 @@
 using AutoMapper;
 using POC.BLL.DTO;
+using POC.BLL.Model;
 using POC.DAL.Entities;
 using POC.DAL.Models;
 using POC.Web.ViewModel;
@@ -14,25 +15,30 @@ namespace POC.Web.Mapper
 
       CreateMap<RegisterViewModel, UserAuthDTO>();
 
-      CreateMap<OrderViewModel, OrderDTO>();
+      CreateMap<CreateOrderVM, CreateOrder>();
 
-      CreateMap<CanvasViewModel, CanvasDTO>();
-
-      CreateMap<Canvas, CanvasViewModel>()
+      CreateMap<Canvas, CanvasResponseVM>()
       .ForMember
       (
         dest => dest.Name,
         opt => opt.MapFrom(src => "Розмір: " + src.Size + ", Ціна: " + src.Price.ToString("C"))
       );
       
-      CreateMap<CanvasDTO, CanvasViewModel>()
+      CreateMap<Canvas, CanvasResponseVM>()
       .ForMember
       (
         dest => dest.Name,
         opt => opt.MapFrom(src => "Розмір: " + src.Size + ", Ціна: " + src.Price.ToString("C"))
       );
 
-      CreateMap<PagesList<UserDTO>, PagesViewModel<UserDTO>>()
+      CreateMap<PagesList<UserDTO>, PagesVM<UserDTO>>()
+      .ForMember
+      (
+        dest => dest.data,
+        opt => opt.MapFrom(src => src.ToArray())
+      );
+
+      CreateMap<PagesList<UserDTO>, PagesVM<UserDTO>>()
       .ForMember
       (
         dest => dest.data,

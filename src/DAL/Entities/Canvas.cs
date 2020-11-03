@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POC.DAL.Entities
 {
@@ -7,5 +8,7 @@ namespace POC.DAL.Entities
   {
     public decimal Price { get; set; }
     public string Size { get; set; }
+
+    public List<Order> Orders { get; set; }
   }
 }

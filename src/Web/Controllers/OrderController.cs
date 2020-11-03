@@ -7,6 +7,8 @@ using POC.BLL.Model;
 using POC.BLL.Interfaces;
 using POC.Web.ViewModel;
 using System.Linq;
+using POC.DAL.Models;
+using POC.DAL.Entities;
 
 namespace Web.Controllers
 {
@@ -28,31 +30,19 @@ namespace Web.Controllers
       _mapper = mapper;
     }
 
-    [HttpPost("GetOrders")]
-    public ActionResult<OrderResponseViewModel> GetOrders([FromBody] OrderParameters parameters)
+    [HttpGet("GetOrders")]
+    public ActionResult<PagesList<Order>> GetOrders([FromQuery] OrderParameters parameters)
     {
-      var result = _orderService.GetOrderPagesList(parameters)
-      .Select(x => new OrderResponseViewModel() 
-      { 
-        Id = x.Id.ToString(),
-        CustomerName = x.CustomerName,
-        Address = x.Address,
-        PhoneNumber = x.PhoneNumber,
-        imgURL = x.imgURL,
-        Canvas = _mapper.Map<CanvasViewModel>(x.Canvas)
-      })
-      .ToList();
+      var result = _orderService.GetOrderPagesList(parameters);
 
       return Ok(result);
     }
 
     [HttpPost("MakeOrder")]
-    public async Task<ActionResult> MakeOrder([FromBody] OrderViewModel order)
+    public async Task<ActionResult> MakeOrder([FromForm] CreateOrder createOrder)
     {
       if (!ModelState.IsValid) return BadRequest(ModelState);
-
-      var mappedModel = _mapper.Map<OrderDTO>(order);
-      await _orderService.MakeOrderAsync(mappedModel);
+      await _orderService.MakeOrderAsync(createOrder);
 
       return Ok();
     }

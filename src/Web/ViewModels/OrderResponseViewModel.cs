@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using POC.DAL.Entities;
 
 namespace POC.Web.ViewModel
 {
@@ -8,7 +9,6 @@ namespace POC.Web.ViewModel
     public string CustomerName { get; set; }
     public string PhoneNumber { get; set; } 
     public string Address { get; set; }
-    public string imgURL { get; set; }
-    public CanvasViewModel Canvas { get; set; }
+    public CanvasResponseVM Canvas { get; set; }
   }
 }
