@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using POC.BLL.Interfaces;
 using POC.DAL.Entities;
 using POC.Web.Config;
 
@@ -26,7 +27,8 @@ namespace POC.Web
         {
           var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
           var rolesManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-          await DBInitializer.InitializeAsync(userManager, rolesManager);
+          var canvasService = scope.ServiceProvider.GetRequiredService<ICanvasService>();
+          await DBInitializer.InitializeAsync(userManager, rolesManager, canvasService);
         }
         catch (Exception ex)
         {
