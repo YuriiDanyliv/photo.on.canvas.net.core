@@ -7,6 +7,7 @@ using POC.Web.ViewModel;
 using System.Threading.Tasks;
 using System.Linq;
 using AutoMapper.QueryableExtensions;
+using POC.DAL.Entities;
 
 namespace POC.Web.Controllers
 {
@@ -29,17 +30,20 @@ namespace POC.Web.Controllers
     }
 
     [HttpGet("GetCanvas")]
-    public ActionResult<IQueryable<CanvasViewModel>> GetCanvas()
+    public ActionResult<IQueryable<CanvasResponseVM>> GetCanvas()
     {
-      var result = _canvasService.GetCanvas().ProjectTo<CanvasViewModel>(_mapper.ConfigurationProvider);
+      var result = _canvasService.GetCanvas()
+      .ProjectTo<CanvasResponseVM>(_mapper.ConfigurationProvider)
+      .OrderBy(x => x.Price);
+      
       return Ok(result);
     }
 
     [HttpPost("CreateCanvas")]
-    public async Task<ActionResult> CreateCanvas([FromBody] CanvasViewModel model)
+    public async Task<ActionResult> CreateCanvas([FromBody] CreateCanvasVM model)
     {
-      var mappedModel = _mapper.Map<CanvasDTO>(model);
-      await _canvasService.CreateCanvasAsync(mappedModel);
+      var canvas = _mapper.Map<Canvas>(model);
+      await _canvasService.CreateCanvasAsync(canvas);
 
       _logger.LogInformation("Create canvas action executed");
 

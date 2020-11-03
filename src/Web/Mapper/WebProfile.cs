@@ -23,20 +23,6 @@ namespace POC.Web.Mapper
         dest => dest.Name,
         opt => opt.MapFrom(src => "Розмір: " + src.Size + ", Ціна: " + src.Price.ToString("C"))
       );
-      
-      CreateMap<Canvas, CanvasResponseVM>()
-      .ForMember
-      (
-        dest => dest.Name,
-        opt => opt.MapFrom(src => "Розмір: " + src.Size + ", Ціна: " + src.Price.ToString("C"))
-      );
-
-      CreateMap<PagesList<UserDTO>, PagesVM<UserDTO>>()
-      .ForMember
-      (
-        dest => dest.data,
-        opt => opt.MapFrom(src => src.ToArray())
-      );
 
       CreateMap<PagesList<UserDTO>, PagesVM<UserDTO>>()
       .ForMember

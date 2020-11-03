@@ -1,6 +1,6 @@
 namespace POC.Web.ViewModel
 {
-  public class PagesViewModel<T>
+  public class PagesVM<T>
   {
     public int ElementsCount { get; set; }
     public int PageSize { get; set; }

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using POC.BLL.Interfaces;
 using POC.DAL.Entities;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace POC.Web.Config
@@ -10,10 +12,12 @@ namespace POC.Web.Config
     public static async Task InitializeAsync(
       UserManager<User> userManager, 
       RoleManager<IdentityRole> roleManager,
-      ICanvasService canvasService)
+      ICanvasService canvasService,
+      IConfiguration config)
     {
-      string adminEmail = "Yura@mail.com";
-      string password = "11111111q";
+      string adminEmail = config.GetSection("InitialAdminParams").GetValue<string>("Email");
+      string password = config.GetSection("InitialAdminParams").GetValue<string>("Password");
+
       var roles = new string[] {"admin", "user"};
 
       foreach(var role in roles)
@@ -46,7 +50,10 @@ namespace POC.Web.Config
 
       foreach (var canvas in canvases)
       {
-        await canvasService.CreateCanvasAsync(canvas);  
+        if(canvasService.GetCanvas().Where(i => i.Price == canvas.Price && i.Size == canvas.Size).Equals(null))
+        {
+          await canvasService.CreateCanvasAsync(canvas);  
+        } 
       }
     }
   }

@@ -18,9 +18,8 @@ namespace POC.BLL.Services
       _unitOfWork = unitOfWork;
     }
 
-    public async Task CreateCanvasAsync(CanvasDTO canvasDTO)
+    public async Task CreateCanvasAsync(Canvas canvas)
     {
-      var canvas = ObjMapper.Map<CanvasDTO, Canvas>(canvasDTO);
       _unitOfWork.Canvas.Create(canvas);
       await _unitOfWork.SaveAsync();
     }
@@ -32,9 +31,9 @@ namespace POC.BLL.Services
       await _unitOfWork.SaveAsync();
     }
 
-    public IQueryable<CanvasDTO> GetCanvas()
+    public IQueryable<Canvas> GetCanvas()
     {
-      var result = _unitOfWork.Canvas.FindAll().ProjectTo<CanvasDTO>(ObjMapper.configuration);
+      var result = _unitOfWork.Canvas.FindAll();
       return result;
     }
   }

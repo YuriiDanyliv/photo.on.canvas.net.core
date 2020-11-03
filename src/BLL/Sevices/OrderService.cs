@@ -43,7 +43,7 @@ namespace POC.BLL.Services
         throw new System.ArgumentNullException($"Error, canvas is {canvas}, image is {image}");
       } 
 
-      var res = _unitOfWork.Order.Create(
+      _unitOfWork.Order.Create(
         new Order {
           CustomerName = order.CustomerName,
           Address = order.Address,

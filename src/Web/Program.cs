@@ -23,12 +23,14 @@ namespace POC.Web
       using (var scope = host.Services.CreateScope())
       {
         var services = scope.ServiceProvider;
+
         try
         {
-          var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-          var rolesManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-          var canvasService = scope.ServiceProvider.GetRequiredService<ICanvasService>();
-          await DBInitializer.InitializeAsync(userManager, rolesManager, canvasService);
+          var userManager = services.GetRequiredService<UserManager<User>>();
+          var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+          var canvasService = services.GetRequiredService<ICanvasService>();
+          var config = services.GetRequiredService<IConfiguration>();
+          await DBInitializer.InitializeAsync(userManager, rolesManager, canvasService, config);
         }
         catch (Exception ex)
         {

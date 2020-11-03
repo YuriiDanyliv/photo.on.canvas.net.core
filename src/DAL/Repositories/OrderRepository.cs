@@ -15,7 +15,9 @@ namespace POC.DAL.Repositories
     
     public override PagesList<Order> GetByQueryParam(QueryParameters parameters)
     {
-      return PagesList<Order>.GetPagesList(_context.Set<Order>().AsNoTracking().Include(order => order.Canvas),
+      return PagesList<Order>.GetPagesList(_context.Set<Order>()
+      .AsNoTracking()
+      .Include(order => order.Canvas),
        parameters.PageNumber, parameters.PageSize);
     }
   }

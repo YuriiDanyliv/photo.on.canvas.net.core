@@ -18,7 +18,7 @@ namespace POC.DAL.Context
 
     public DbSet<Canvas> Canvas { get; set; }
     public DbSet<Order> Orders { get; set; }
-    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
       optionsBuilder.UseMySql(_config.GetConnectionString("MySQLServerConnection"),

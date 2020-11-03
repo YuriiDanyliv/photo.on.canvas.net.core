@@ -37,9 +37,9 @@ namespace POC.Web.Controllers
     }
 
     [HttpGet("GetUsers")]
-    public ActionResult<PagesViewModel<UserDTO>> GetUsers([FromQuery] UserQueryParam param)
+    public ActionResult<PagesVM<UserDTO>> GetUsers([FromQuery] UserQueryParam param)
     {
-      var result = _mapper.Map<PagesViewModel<UserDTO>>(_accountService.GetUsers(param));
+      var result = _mapper.Map<PagesVM<UserDTO>>(_accountService.GetUsers(param));
 
       return Ok(result);
     }

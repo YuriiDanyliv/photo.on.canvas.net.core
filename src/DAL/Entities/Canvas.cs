@@ -8,7 +8,5 @@ namespace POC.DAL.Entities
   {
     public decimal Price { get; set; }
     public string Size { get; set; }
-
-    public List<Order> Orders { get; set; }
   }
 }
