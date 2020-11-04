@@ -48,9 +48,11 @@ namespace POC.Web.Config
         new Canvas {Price = 514, Size = "70x90"},
       };
 
+      var db = canvasService.GetCanvas();
+
       foreach (var canvas in canvases)
       {
-        if(canvasService.GetCanvas().Where(i => i.Price == canvas.Price && i.Size == canvas.Size).Equals(null))
+        if(!db.Any(i => i.Price == canvas.Price && i.Size == canvas.Size))
         {
           await canvasService.CreateCanvasAsync(canvas);  
         } 
