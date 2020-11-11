@@ -1,5 +1,6 @@
 using System.IO;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -41,6 +42,11 @@ namespace POC.Web
       services.SwashBuckleConfigService();
 
       services.AddCors();
+      
+      services.AddAuthentication(
+        CertificateAuthenticationDefaults.AuthenticationScheme)
+      .AddCertificate();
+
       services.AddControllers()
       .AddNewtonsoftJson(cfg =>
       cfg.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -66,7 +72,9 @@ namespace POC.Web
         FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
         RequestPath = new PathString("/Resources")
       });
+      app.UseAuthentication();
       app.UseAuthorization();
+
       app.SwaggerMiddleware();
 
       app.UseEndpoints(endpoints =>
