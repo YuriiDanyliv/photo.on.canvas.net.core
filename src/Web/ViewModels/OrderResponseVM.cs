@@ -3,7 +3,7 @@ using POC.DAL.Entities;
 
 namespace POC.Web.ViewModel
 {
-  public class OrderResponseViewModel
+  public class OrderResponseVM
   {
     public string Id { get; set; }
     public string CustomerName { get; set; }

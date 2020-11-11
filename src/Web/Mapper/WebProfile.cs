@@ -30,6 +30,13 @@ namespace POC.Web.Mapper
         dest => dest.data,
         opt => opt.MapFrom(src => src.ToArray())
       );
+
+      CreateMap<PagesList<Order>, PagesVM<Order>>()
+      .ForMember
+      (
+        dest => dest.data,
+        opt => opt.MapFrom(src => src.ToArray())
+      );
     }
   }
 }

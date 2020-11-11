@@ -31,24 +31,24 @@ namespace Web.Controllers
     }
 
     [HttpGet("GetOrders")]
-    public ActionResult<PagesList<Order>> GetOrders([FromQuery] OrderParameters parameters)
+    public ActionResult<PagesVM<Order>> GetOrders([FromQuery] OrderParameters parameters)
     {
-      var result = _orderService.GetOrderPagesList(parameters);
+      var result = _mapper.Map<PagesVM<Order>>(_orderService.GetOrderPagesList(parameters));
 
       return Ok(result);
     }
 
     [HttpPost("MakeOrder")]
-    public async Task<ActionResult> MakeOrder([FromForm] CreateOrder createOrder)
+    public async Task<ActionResult> MakeOrder([FromForm] CreateOrderVM createOrder)
     {
       if (!ModelState.IsValid) return BadRequest(ModelState);
-      await _orderService.MakeOrderAsync(createOrder);
+      await _orderService.MakeOrderAsync(_mapper.Map<CreateOrder>(createOrder));
 
       return Ok();
     }
 
-    [HttpPost("DeleteOrder")]
-    public async Task<ActionResult> DeleteOrder([FromBody] string Id)
+    [HttpDelete("DeleteOrder")]
+    public async Task<ActionResult> DeleteOrder([FromQuery] string Id)
     {
       await _orderService.DeleteOrderByIdAsync(Id);
       return Ok();
