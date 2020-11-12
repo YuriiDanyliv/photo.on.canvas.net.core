@@ -1,8 +1,6 @@
-﻿using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using POC.BLL.DTO;
+﻿using System.IO;
+using System.Threading.Tasks;
 using POC.BLL.Interfaces;
-using POC.BLL.Mapper;
 using POC.BLL.Model;
 using POC.DAL.Entities;
 using POC.DAL.Interfaces;
@@ -36,20 +34,21 @@ namespace POC.BLL.Services
     public async Task MakeOrderAsync(CreateOrder order)
     {
       var canvas = await _unitOfWork.Canvas.FindByIdAsync(order.CanvasId);
-      var image =  await _fileService.AddOrderedImage(order.Image);
 
-      if (canvas.Equals(null) || image.Equals(null))
+      byte[] imageData = null;
+      using (var binaryReader = new BinaryReader(order.Image.OpenReadStream()))
       {
-        throw new System.ArgumentNullException($"Error, canvas is {canvas}, image is {image}");
-      } 
+        imageData = binaryReader.ReadBytes((int)order.Image.Length);
+      }
 
       _unitOfWork.Order.Create(
-        new Order {
+        new Order
+        {
           CustomerName = order.CustomerName,
           Address = order.Address,
           PhoneNumber = order.PhoneNumber,
           Canvas = canvas,
-          Image = image,
+          Image = imageData,
         }
       );
       await _unitOfWork.SaveAsync();

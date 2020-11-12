@@ -31,9 +31,9 @@ namespace Web.Controllers
     }
 
     [HttpGet("GetOrders")]
-    public ActionResult<PagesVM<Order>> GetOrders([FromQuery] OrderParameters parameters)
+    public ActionResult<PagesVM<OrderResponseVM>> GetOrders([FromQuery] OrderParameters parameters)
     {
-      var result = _mapper.Map<PagesVM<Order>>(_orderService.GetOrderPagesList(parameters));
+      var result = _mapper.Map<PagesVM<OrderResponseVM>>(_orderService.GetOrderPagesList(parameters));
 
       return Ok(result);
     }

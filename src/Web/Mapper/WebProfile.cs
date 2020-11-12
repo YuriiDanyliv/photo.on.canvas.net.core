@@ -16,6 +16,8 @@ namespace POC.Web.Mapper
       CreateMap<RegisterViewModel, UserAuthDTO>();
 
       CreateMap<CreateOrderVM, CreateOrder>();
+      
+      CreateMap<Order, OrderResponseVM>();
 
       CreateMap<Canvas, CanvasResponseVM>()
       .ForMember
@@ -31,7 +33,7 @@ namespace POC.Web.Mapper
         opt => opt.MapFrom(src => src.ToArray())
       );
 
-      CreateMap<PagesList<Order>, PagesVM<Order>>()
+      CreateMap<PagesList<Order>, PagesVM<OrderResponseVM>>()
       .ForMember
       (
         dest => dest.data,
