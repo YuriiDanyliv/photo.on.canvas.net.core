@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using POC.BLL.Interfaces;
+using POC.BLL.Model;
 using POC.DAL.Entities;
 using POC.DAL.Interfaces;
 
@@ -10,30 +13,75 @@ namespace POC.BLL.Services
 {
   public class FileService : IFileService
   {
-    public FileService()
+
+    private readonly IUnitOfWork _unitOfWork;
+
+    public FileService(IUnitOfWork unitOfWork)
     {
-      
+      _unitOfWork = unitOfWork;
     }
 
-    public async Task<ImageFileData> AddOrderedImage(IFormFile uploadedFile)
+    public async Task AddFile(IFormFile uploadedFile, string folder)
     {
-      var folderName = Path.Combine("Resources", "Images");
-      var fileName = uploadedFile.FileName + Guid.NewGuid().ToString();
-      var path = Path.Combine(Directory.GetCurrentDirectory(), folderName, fileName);
+      var fileName = uploadedFile.FileName;
+      var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", folder);
+      if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+      var path = Path.Combine(folderPath, fileName);
+      if (File.Exists(path)) throw new Exception("File with same name already exist");
 
       try
       {
+        _unitOfWork.File.Create(new FileEntity()
+        {
+          FileName = fileName,
+          Folder = folder,
+          ContentType = uploadedFile.ContentType
+        });
+        await _unitOfWork.SaveAsync();
+
         using (var fileStream = new FileStream(path, FileMode.Create))
         {
           await uploadedFile.CopyToAsync(fileStream);
         }
-
-        return new ImageFileData() { Name = uploadedFile.FileName, Path = path };
       }
       catch (System.Exception)
       {
         throw;
       }
+    }
+
+    public async Task DeleteFile(string fileId)
+    {
+      var file = await _unitOfWork.File.FindByIdAsync(fileId);
+      var path = Path.Combine(Directory.GetCurrentDirectory(), "Resources", file.Folder, file.FileName);
+
+      File.Delete(path);
+      _unitOfWork.File.Delete(file);
+      await _unitOfWork.SaveAsync();
+    }
+
+    public async Task<List<FileData>> GetFiles(string folder)
+    {
+      var filesList = new List<FileData>();
+      var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", folder);
+
+      var filesData = await _unitOfWork.File.FindByCondition(file => file.Folder == folder).ToListAsync();
+
+      foreach (var item in filesData)
+      {
+        byte[] file = File.ReadAllBytes(Path.Combine(folderPath, item.FileName));
+
+        filesList.Add(new FileData()
+        {
+          Id = item.Id,
+          FileName = item.FileName,
+          ContentType = item.ContentType,
+          File = file,
+        });
+      }
+
+      return filesList;
     }
   }
 }

@@ -1,11 +1,14 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using POC.DAL.Entities;
+using POC.BLL.Model;
 
 namespace POC.BLL.Interfaces
 {
   public interface IFileService
   {
-    Task<ImageFileData> AddOrderedImage(IFormFile file);
+    Task AddFile(IFormFile file, string folder);
+    Task<List<FileData>> GetFiles(string folder);
+    Task DeleteFile(string fileId);
   }
 }

@@ -18,6 +18,7 @@ namespace POC.DAL.Context
 
     public DbSet<Canvas> Canvas { get; set; }
     public DbSet<Order> Orders { get; set; }
+    public DbSet<FileEntity> Files { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
