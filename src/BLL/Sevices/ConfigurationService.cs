@@ -1,35 +1,17 @@
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using POC.BLL.Interfaces;
 using POC.BLL.Models;
 
 namespace POC.BLL.Services
 {
-  public class ConfigurationService : IConfigurationService
+  public class ConfigurationService<T> : IConfigurationService<T> where T: IConfigurationModel
   {
-    public IConfiguration _config { get; set; }
-
-    public ConfigurationService(IConfiguration config)
+    public ConfigurationService()
     {
-      _config = config;
     }
 
-    public EmailServiceConfig GetEmailConfig()
-    {
-      var result = GetSettingsAsync<EmailServiceConfig>().Result;
-      return (result);
-    }
-
-    public void SetEmailConfig(EmailServiceConfig cfgModel)
-    {
-      UpdateSettings<EmailServiceConfig>(cfgModel);
-    }
-
-
-    private async Task<T> GetSettingsAsync<T>()
+    public async Task<T> GetSettingsAsync()
     {
       T obj;
 
@@ -42,7 +24,7 @@ namespace POC.BLL.Services
       return obj;
     }
 
-    private void UpdateSettings<T>(T model)
+    public async Task UpdateSettingsAsync(T model)
     {
       var options = new JsonSerializerOptions
       {
@@ -52,7 +34,7 @@ namespace POC.BLL.Services
       using (var fs = new FileStream(
         $"Config//{typeof(T).Name}.json", FileMode.Create))
       {
-        JsonSerializer.SerializeAsync<T>(fs, model, options);
+        await JsonSerializer.SerializeAsync<T>(fs, model, options);
       }
     }
   }

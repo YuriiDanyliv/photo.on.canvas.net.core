@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using POC.BLL.Interfaces;
 using POC.DAL.Models;
 using MailKit.Net.Smtp;
 using MimeKit;
@@ -9,13 +8,13 @@ namespace POC.BLL.Services
 {
   public class EmailSenderService : IEmailSenderService
   {
-    private readonly IConfigurationService _cfgService;
+    private readonly IConfigurationService<EmailServiceConfig> _cfgService;
     private readonly EmailServiceConfig _emailConfig;
 
-    public EmailSenderService(IConfigurationService cfgService)
+    public EmailSenderService(IConfigurationService<EmailServiceConfig> cfgService)
     {
       _cfgService = cfgService;
-      _emailConfig = _cfgService.GetEmailConfig();
+      _emailConfig = _cfgService.GetSettingsAsync().Result;
     }
 
     public void SendEmail(EmailMessage message)

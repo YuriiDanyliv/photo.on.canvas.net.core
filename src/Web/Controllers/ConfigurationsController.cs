@@ -1,9 +1,7 @@
-using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using POC.BLL.Interfaces;
 using POC.BLL.Models;
+using POC.BLL.Services;
 
 namespace POC.Web.Controllers
 {
@@ -11,23 +9,24 @@ namespace POC.Web.Controllers
   [ApiController]
   public class ConfigurationController : Controller
   {
-    public IConfigurationService _cfgService { get; set; }
+    public IConfigurationService<EmailServiceConfig> _emailConfig { get; set; }
 
-    public ConfigurationController(IConfigurationService cfgService)
+    public ConfigurationController(
+      IConfigurationService<EmailServiceConfig> emailConfig)
     {
-      _cfgService = cfgService;
+      _emailConfig = emailConfig;
     }
 
     [HttpGet("GetEmailConfiguration")]
-    public ActionResult<EmailServiceConfig> GetEmailConfig()
+    public async Task<ActionResult<EmailServiceConfig>> GetEmailConfig()
     {
-      return Ok(_cfgService.GetEmailConfig());
+      return Ok(await _emailConfig.GetSettingsAsync());
     }
 
     [HttpPost("SetEmailConfiguration")]
-    public ActionResult SetEmailConfig([FromBody] EmailServiceConfig model)
+    public async Task<ActionResult> SetEmailConfig([FromBody] EmailServiceConfig model)
     {
-      _cfgService.SetEmailConfig(model);
+      await _emailConfig.UpdateSettingsAsync(model);
       return Ok();
     }
   }
