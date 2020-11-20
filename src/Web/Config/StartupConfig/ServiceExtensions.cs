@@ -1,13 +1,9 @@
-using POC.BLL.Interfaces;
 using POC.BLL.Services;
 using POC.DAL.Interfaces;
-using POC.DAL.Models;
 using POC.DAL.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using POC.BLL.Models;
-using Microsoft.Extensions.Configuration;
 
 namespace POC.Web.Config
 {
@@ -23,7 +19,9 @@ namespace POC.Web.Config
       services.AddScoped<ICanvasService, CanvasService>();
       services.AddScoped<IRolesService, RolesService>();
       services.AddScoped<IFileService, FileService>();
-      services.AddScoped<IConfigurationService, ConfigurationService>();
+      services.AddScoped(typeof(IConfigurationService<>), typeof(ConfigurationService<>));
+      
+      services.AddSingleton<IInstagramService, InstagramService>();
     }
 
     public static void IdentityConfiguration(this IServiceCollection services)
