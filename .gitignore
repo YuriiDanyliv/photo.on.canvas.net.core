@@ -348,5 +348,6 @@ healthchecksdb
 
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
-src/Web/Config/EmailServiceConfig.json
+EmailServiceConfig.json
 .vscode
+InstagramConfig.json
