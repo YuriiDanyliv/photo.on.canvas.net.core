@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using POC.BLL.Model;
+using POC.BLL.Models;
 using Microsoft.AspNetCore.Identity;
 using POC.BLL.DTO;
 
-namespace POC.BLL.Interfaces
+namespace POC.BLL.Services
 {
   public interface IRolesService
   {

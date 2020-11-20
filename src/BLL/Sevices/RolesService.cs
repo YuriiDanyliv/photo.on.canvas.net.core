@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using POC.BLL.Interfaces;
-using POC.BLL.Model;
+using POC.BLL.Models;
 using POC.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
-using POC.BLL.DTO;
 
 namespace POC.BLL.Services
 {

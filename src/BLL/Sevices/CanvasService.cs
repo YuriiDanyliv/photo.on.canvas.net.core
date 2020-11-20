@@ -1,9 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
-using POC.BLL.DTO;
-using POC.BLL.Interfaces;
-using POC.BLL.Mapper;
 using POC.DAL.Entities;
 using POC.DAL.Interfaces;
 

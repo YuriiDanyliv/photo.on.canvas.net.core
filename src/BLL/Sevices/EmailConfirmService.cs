@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using POC.BLL.DTO;
-using POC.BLL.Interfaces;
 using POC.BLL.Mapper;
 using POC.DAL.Entities;
 using POC.DAL.Models;

@@ -6,9 +6,9 @@ using Microsoft.Extensions.Logging;
 using POC.BLL.DTO;
 using POC.Web.ViewModel;
 using Microsoft.AspNetCore.Authorization;
-using POC.BLL.Interfaces;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
-using POC.BLL.Model;
+using POC.BLL.Models;
+using POC.BLL.Services;
 
 namespace POC.Web.Controllers
 {
@@ -19,20 +19,20 @@ namespace POC.Web.Controllers
     private readonly ILogger<AccountController> _logger;
     private readonly IAccountService _accountService;
     private readonly IEmailConfirmService _emailConfirmService;
-    private readonly IConfigurationService _configService;
+    private readonly EmailServiceConfig _emailConfig;
     private readonly IMapper _mapper;
 
     public AccountController(
       ILogger<AccountController> logger,
       IAccountService accounService,
       IEmailConfirmService emailConfirmService,
-      IConfigurationService configService,
+      IConfigurationService<EmailServiceConfig> configService,
       IMapper mapper)
     {
       _logger = logger;
       _accountService = accounService;
       _emailConfirmService = emailConfirmService;
-      _configService = configService;
+      _emailConfig= configService.GetSettingsAsync().Result;
       _mapper = mapper;
     }
 
@@ -63,7 +63,7 @@ namespace POC.Web.Controllers
 
       if (result.Succeeded)
       {
-        if (_configService.GetEmailConfig().ServiceIsOn)
+        if (_emailConfig.ServiceIsOn)
         {
           await _emailConfirmService.SendConfirmEmailAsync(mappedModel, Url);
           return Ok("follow the link provided in the email");
@@ -92,7 +92,7 @@ namespace POC.Web.Controllers
       if (!ModelState.IsValid) return BadRequest(ModelState);
       var mappedModel = _mapper.Map<UserAuthDTO>(model);
 
-      if (_configService.GetEmailConfig().ServiceIsOn)
+      if (_emailConfig.ServiceIsOn)
       {
         var isEmailConfirmed = await _emailConfirmService.ValidateConfirmedEmailAsync(mappedModel);
         if (!isEmailConfirmed) return BadRequest(new { msg = "Email not confirmed" });

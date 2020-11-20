@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
-using POC.BLL.DTO;
-using POC.BLL.Interfaces;
 using POC.Web.ViewModel;
 using System.Threading.Tasks;
 using System.Linq;
 using AutoMapper.QueryableExtensions;
 using POC.DAL.Entities;
+using POC.BLL.Services;
 
 namespace POC.Web.Controllers
 {

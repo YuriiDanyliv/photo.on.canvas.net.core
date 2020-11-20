@@ -2,13 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
-using POC.BLL.DTO;
-using POC.BLL.Model;
-using POC.BLL.Interfaces;
+using POC.BLL.Models;
 using POC.Web.ViewModel;
-using System.Linq;
-using POC.DAL.Models;
-using POC.DAL.Entities;
+using POC.BLL.Services;
 
 namespace Web.Controllers
 {

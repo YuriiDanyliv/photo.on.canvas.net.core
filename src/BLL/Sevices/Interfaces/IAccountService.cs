@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using POC.BLL.DTO;
 using Microsoft.AspNetCore.Identity;
 using POC.DAL.Models;
-using POC.BLL.Model;
+using POC.BLL.Models;
 
-namespace POC.BLL.Interfaces
+namespace POC.BLL.Services
 {
   public interface IAccountService
   {

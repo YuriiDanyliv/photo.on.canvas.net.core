@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using POC.BLL.Model;
+using POC.BLL.Models;
 
-namespace POC.BLL.Interfaces
+namespace POC.BLL.Services
 {
   public interface IFileService
   {

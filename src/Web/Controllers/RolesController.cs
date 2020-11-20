@@ -1,11 +1,9 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using POC.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using POC.Web.ViewModel;
-using PCO.Web.ViewModel;
+using POC.BLL.Services;
 
 namespace WEB.Controllers
 {

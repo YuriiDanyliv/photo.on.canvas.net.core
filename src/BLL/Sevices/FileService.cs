@@ -4,8 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using POC.BLL.Interfaces;
-using POC.BLL.Model;
+using POC.BLL.Models;
 using POC.DAL.Entities;
 using POC.DAL.Interfaces;
 

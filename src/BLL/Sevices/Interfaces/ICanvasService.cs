@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using POC.BLL.DTO;
 using POC.DAL.Entities;
 
-namespace POC.BLL.Interfaces
+namespace POC.BLL.Services
 {
   public interface ICanvasService
   {

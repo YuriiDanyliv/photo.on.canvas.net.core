@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 using POC.BLL.DTO;
-using POC.BLL.Model;
+using POC.BLL.Models;
 using POC.DAL.Entities;
 using POC.DAL.Models;
 
-namespace POC.BLL.Interfaces
+namespace POC.BLL.Services
 {
   public interface IOrderService
   {
