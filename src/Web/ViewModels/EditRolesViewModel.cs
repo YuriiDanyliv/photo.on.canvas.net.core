@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace PCO.Web.ViewModel
+namespace POC.Web.ViewModel
 {
   public class EditRolesViewModel
   {

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using POC.DAL.Entities;
 
-namespace POC.BLL.Model
+namespace POC.BLL.Models
 {
   public class CreateOrder
   {

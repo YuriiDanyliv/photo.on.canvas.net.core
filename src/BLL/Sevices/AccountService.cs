@@ -2,12 +2,10 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using POC.DAL.Entities;
 using POC.BLL.DTO;
-using POC.BLL.Interfaces;
-using System.Linq;
 using POC.BLL.Mapper;
 using AutoMapper.QueryableExtensions;
 using POC.DAL.Models;
-using POC.BLL.Model;
+using POC.BLL.Models;
 
 namespace POC.BLL.Services
 {

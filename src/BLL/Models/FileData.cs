@@ -1,6 +1,6 @@
 using POC.DAL.Models;
 
-namespace POC.BLL.Model
+namespace POC.BLL.Models
 {
   public class FileData
   {

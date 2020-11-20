@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace POC.BLL.Model
+namespace POC.BLL.Models
 {
   public class EditUserRolesResultModel
   {

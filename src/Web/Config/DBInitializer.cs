@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using POC.BLL.Interfaces;
+using POC.BLL.Services;
 using POC.DAL.Entities;
 using System.Linq;
 using System.Threading.Tasks;
