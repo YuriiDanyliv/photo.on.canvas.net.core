@@ -1,7 +1,9 @@
+using System.IO;
 using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 
 namespace POC.Web.Config
@@ -39,6 +41,18 @@ namespace POC.Web.Config
             }.ToString());
           }
         });
+      });
+    }
+
+    public static void StaticFilesConfiguration(this IApplicationBuilder app)
+    {
+      var path = Path.Combine(Directory.GetCurrentDirectory(), @"Resources");
+      if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+      
+      app.UseStaticFiles(new StaticFileOptions()
+      {
+        FileProvider = new PhysicalFileProvider(path),
+        RequestPath = new PathString("/Resources")
       });
     }
   }
