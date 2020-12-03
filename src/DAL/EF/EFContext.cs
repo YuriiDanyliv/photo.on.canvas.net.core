@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +21,7 @@ namespace POC.DAL.Context
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-      optionsBuilder.UseMySql(_config.GetConnectionString("MySQLServerConnection"),
+      optionsBuilder.UseSqlServer(_config.GetConnectionString("AzureSQLServer"),
       cfg => cfg.MigrationsAssembly("POC.Web"));
     }
   }
