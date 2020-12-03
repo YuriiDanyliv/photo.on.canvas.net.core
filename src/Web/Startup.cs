@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using POC.DAL.Context;
 using POC.DAL.Entities;
 using POC.Web.Config;
+using POC.Web.Helpers;
 
 namespace POC.Web
 {
@@ -27,7 +28,6 @@ namespace POC.Web
     }
 
     public IConfiguration _configuration { get; }
-    public ILogger _logger { get; set; }
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -37,12 +37,13 @@ namespace POC.Web
       services.AddDbContext<EFContext>();
       services.AddIdentity<User, IdentityRole>()
       .AddEntityFrameworkStores<DAL.Context.EFContext>();
+
       services.AddAutoMapper(typeof(Startup));
       services.IdentityConfiguration();
       services.SwashBuckleConfigService();
 
       services.AddCors();
-      
+
       services.AddAuthentication(
         CertificateAuthenticationDefaults.AuthenticationScheme)
       .AddCertificate();
@@ -53,12 +54,23 @@ namespace POC.Web
     }
 
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
+    public void Configure(
+      IApplicationBuilder app, 
+      IWebHostEnvironment env, 
+      ILoggerFactory loggerFactory,
+      ILogger<Startup> logger)
     {
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
       }
+
+      // var logger = loggerFactory
+      // .AddFile(
+      //   Path.Combine(Directory.GetCurrentDirectory(),
+      //  _configuration.GetSection("Logging").GetValue<string>("LogPath"))
+      // )
+      // .CreateLogger("Startup");
 
       app.ConfigureExceptionHandler(logger);
       app.UseHttpsRedirection();
@@ -66,12 +78,9 @@ namespace POC.Web
       app.UseCors(
         builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
       );
-      app.UseStaticFiles();
-      app.UseStaticFiles(new StaticFileOptions()
-      {
-        FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
-        RequestPath = new PathString("/Resources")
-      });
+
+      app.StaticFilesConfiguration();
+
       app.UseAuthentication();
       app.UseAuthorization();
 
