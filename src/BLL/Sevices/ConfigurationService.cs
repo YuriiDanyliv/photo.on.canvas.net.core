@@ -13,12 +13,15 @@ namespace POC.BLL.Services
 
     public async Task<T> GetSettingsAsync()
     {
-      T obj;
+      T obj = default(T);
 
       using (var fs = new FileStream(
-      $"Config//{typeof(T).Name}.json", FileMode.Open))
+      $"Config//{typeof(T).Name}.json", FileMode.OpenOrCreate))
       {
-        obj = await JsonSerializer.DeserializeAsync<T>(fs);
+        if (fs.Length != 0)
+        {
+          obj = await JsonSerializer.DeserializeAsync<T>(fs);
+        }
       }
 
       return obj;

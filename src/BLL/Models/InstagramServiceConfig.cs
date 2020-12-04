@@ -6,6 +6,6 @@ namespace POC.BLL.Models
   {
     public string Username { get; set; }
     public string Password { get; set; }
-    public List<string> SendMsgTo { get; set; }
+    public List<string> MsgReceiverList { get; set; }
   }
 }

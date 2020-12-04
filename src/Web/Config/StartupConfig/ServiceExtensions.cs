@@ -19,9 +19,8 @@ namespace POC.Web.Config
       services.AddScoped<ICanvasService, CanvasService>();
       services.AddScoped<IRolesService, RolesService>();
       services.AddScoped<IFileService, FileService>();
+      services.AddScoped<IInstagramService, InstagramService>();
       services.AddScoped(typeof(IConfigurationService<>), typeof(ConfigurationService<>));
-      
-      services.AddSingleton<IInstagramService, InstagramService>();
     }
 
     public static void IdentityConfiguration(this IServiceCollection services)

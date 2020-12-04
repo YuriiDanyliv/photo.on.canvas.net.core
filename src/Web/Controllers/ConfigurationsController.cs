@@ -9,12 +9,15 @@ namespace POC.Web.Controllers
   [ApiController]
   public class ConfigurationController : Controller
   {
-    public IConfigurationService<EmailServiceConfig> _emailConfig { get; set; }
+    private readonly IConfigurationService<EmailServiceConfig> _emailConfig;
+    private readonly IConfigurationService<InstagramServiceConfig> _instaConfig;
 
     public ConfigurationController(
-      IConfigurationService<EmailServiceConfig> emailConfig)
+      IConfigurationService<EmailServiceConfig> emailConfig,
+      IConfigurationService<InstagramServiceConfig> instaConfig)
     {
       _emailConfig = emailConfig;
+      _instaConfig = instaConfig;
     }
 
     [HttpGet("GetEmailConfiguration")]
@@ -27,6 +30,19 @@ namespace POC.Web.Controllers
     public async Task<ActionResult> SetEmailConfig([FromBody] EmailServiceConfig model)
     {
       await _emailConfig.UpdateSettingsAsync(model);
+      return Ok();
+    }
+
+    [HttpGet("GetInstagramConfiguration")]
+    public async Task<ActionResult<EmailServiceConfig>> GetInstagramConfig()
+    {
+      return Ok(await _instaConfig.GetSettingsAsync());
+    }
+
+    [HttpPost("SetInstagramConfiguration")]
+    public async Task<ActionResult> SetInstagramConfig([FromForm] InstagramServiceConfig model)
+    {
+      await _instaConfig.UpdateSettingsAsync(model);
       return Ok();
     }
   }
