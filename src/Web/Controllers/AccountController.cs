@@ -49,7 +49,7 @@ namespace POC.Web.Controllers
     {
       var result = await _accountService.DeleteUserAsync(userId);
       if (result.Succeeded) return Ok(result);
-
+      
       return BadRequest(result.Errors);
     }
 

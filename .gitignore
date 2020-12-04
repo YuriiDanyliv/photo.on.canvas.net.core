@@ -350,4 +350,4 @@ healthchecksdb
 MigrationBackup/
 EmailServiceConfig.json
 .vscode
-InstagramConfig.json
+InstagramServiceConfig.json
