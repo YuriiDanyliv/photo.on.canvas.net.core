@@ -29,7 +29,7 @@ namespace WEB.Controllers
       return BadRequest(result.Errors);
     }
 
-    [HttpPost("DeleteRole")]
+    [HttpDelete("DeleteRole")]
     public async Task<ActionResult<IdentityResult>> DeleteRole([FromBody] string id)
     {
       var result = await _rolesService.DeleteRoleAsync(id);
