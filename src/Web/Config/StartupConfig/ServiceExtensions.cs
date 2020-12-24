@@ -20,7 +20,7 @@ namespace POC.Web.Config
       services.AddScoped<IRolesService, RolesService>();
       services.AddScoped<IFileService, FileService>();
       services.AddScoped<IInstagramService, InstagramService>();
-      services.AddScoped(typeof(IConfigurationService<>), typeof(ConfigurationService<>));
+      services.AddSingleton(typeof(IConfigurationService<>), typeof(ConfigurationService<>));
     }
 
     public static void IdentityConfiguration(this IServiceCollection services)
@@ -41,7 +41,28 @@ namespace POC.Web.Config
       services.AddSwaggerGen(cfg =>
       {
         cfg.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+
+        cfg.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+          In = ParameterLocation.Header,
+          Description = "Please insert JWT with Bearer into field",
+          Name = "Authorization",
+          Type = SecuritySchemeType.ApiKey
+        });
+
+        cfg.AddSecurityRequirement(new OpenApiSecurityRequirement { 
+          { 
+            new OpenApiSecurityScheme 
+            { 
+              Reference = new OpenApiReference 
+              { 
+                Type = ReferenceType.SecurityScheme, Id = "Bearer" 
+              } 
+            }, new string[] { } 
+          } 
+        });
       });
+
     }
   }
 }

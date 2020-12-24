@@ -12,7 +12,7 @@ namespace POC.BLL.Services
     PagesList<UserDTO> GetUsers(UserQueryParam param);
     Task<IdentityResult> DeleteUserAsync(string userId);
     Task<IdentityResult> RegisterAsync(UserAuthDTO model);
-    Task<SignInResult> LoginAsync(UserAuthDTO model);
+    Task<LoginResult> LoginAsync(UserAuthDTO model);
     Task LogoutAsync();
 
   }

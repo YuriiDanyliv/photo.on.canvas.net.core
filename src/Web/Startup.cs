@@ -10,10 +10,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using POC.DAL.Context;
 using POC.DAL.Entities;
 using POC.Web.Config;
 using POC.Web.Helpers;
+using System.Text;
 
 namespace POC.Web
 {
@@ -36,17 +39,35 @@ namespace POC.Web
 
       services.AddDbContext<EFContext>();
       services.AddIdentity<User, IdentityRole>()
-      .AddEntityFrameworkStores<DAL.Context.EFContext>();
+      .AddEntityFrameworkStores<DAL.Context.EFContext>()
+      .AddDefaultTokenProviders();
+      services.IdentityConfiguration();
+
+      services.AddAuthentication(options => {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+      })
+      .AddJwtBearer(options => {
+        options.RequireHttpsMetadata = true;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+          ValidateIssuer = true,
+          ValidIssuer = _configuration.GetSection("JWT").GetValue<string>("Issuer"),
+          ValidateAudience = true,
+          ValidAudience = _configuration.GetSection("JWT").GetValue<string>("Audience"),
+          ValidateLifetime = true,
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            _configuration.GetSection("JWT").GetValue<string>("Key"))),
+          ValidateIssuerSigningKey = true,
+        };
+      })
+      .AddCertificate();
 
       services.AddAutoMapper(typeof(Startup));
-      services.IdentityConfiguration();
       services.SwashBuckleConfigService();
 
       services.AddCors();
-
-      services.AddAuthentication(
-        CertificateAuthenticationDefaults.AuthenticationScheme)
-      .AddCertificate();
 
       services.AddControllers()
       .AddNewtonsoftJson(cfg =>
@@ -76,7 +97,9 @@ namespace POC.Web
       app.UseHttpsRedirection();
       app.UseRouting();
       app.UseCors(
-        builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
+        builder => builder.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod()
       );
 
       app.StaticFilesConfiguration();
