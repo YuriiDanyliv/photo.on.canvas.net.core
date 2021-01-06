@@ -17,6 +17,7 @@ using POC.DAL.Entities;
 using POC.Web.Config;
 using POC.Web.Helpers;
 using System.Text;
+using POC.BLL.Services;
 
 namespace POC.Web
 {
@@ -68,6 +69,8 @@ namespace POC.Web
       services.SwashBuckleConfigService();
 
       services.AddCors();
+
+      services.AddHostedService<InstagramHostedService>();
 
       services.AddControllers()
       .AddNewtonsoftJson(cfg =>

@@ -35,7 +35,6 @@ namespace POC.BLL.Services
         {
           FileName = fileName,
           Folder = folder,
-          ContentType = uploadedFile.ContentType
         });
         await _unitOfWork.SaveAsync();
 
@@ -43,6 +42,30 @@ namespace POC.BLL.Services
         {
           await uploadedFile.CopyToAsync(fileStream);
         }
+      }
+      catch (System.Exception)
+      {
+        throw;
+      }
+    }
+    
+    public async Task AddFile(string folder, string category, string contentType, byte[] bytes)
+    {
+      var fileName = Guid.NewGuid().ToString();
+      var path = GetPath(folder, fileName, contentType);
+
+      try
+      {
+        _unitOfWork.File.Create(new FileEntity()
+        {
+          FileName = fileName,
+          Folder = folder,
+          Category = category,
+          ContentType = contentType
+        });
+        await _unitOfWork.SaveAsync();
+
+        File.WriteAllBytes(path, bytes);
       }
       catch (System.Exception)
       {
@@ -75,12 +98,23 @@ namespace POC.BLL.Services
         {
           Id = item.Id,
           FileName = item.FileName,
-          ContentType = item.ContentType,
           File = file,
         });
       }
 
       return filesList;
+    }
+
+    private string GetPath(string folder, string fileName, string fileType)
+    {
+      var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", folder);
+      if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+      var name = $"{fileName}.{fileType}";
+      var path = Path.Combine(folderPath, name);
+      if (File.Exists(path)) throw new Exception("File with same name already exist");
+
+      return path;
     }
   }
 }

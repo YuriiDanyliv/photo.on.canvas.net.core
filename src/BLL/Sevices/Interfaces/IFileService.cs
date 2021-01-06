@@ -10,5 +10,6 @@ namespace POC.BLL.Services
     Task AddFile(IFormFile file, string folder);
     Task<List<FileData>> GetFiles(string folder);
     Task DeleteFile(string fileId);
+    Task AddFile(string folder, string category, string contentType, byte[] bytes);
   }
 }

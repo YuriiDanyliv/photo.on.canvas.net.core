@@ -10,6 +10,7 @@ namespace POC.DAL.Repositories
 
     private ICanvasRepository _canvas;
     private IOrderRepository _order;
+    private IInstagramMediaRepository _instaMedia;
     private IFileRepository _file;
 
     public UnitOfWork(EFContext context)
@@ -30,6 +31,11 @@ namespace POC.DAL.Repositories
     public IFileRepository File 
     {
       get => _file ??= new FileRepository(_context);
+    }
+
+    public IInstagramMediaRepository InstaMedia 
+    {
+      get => _instaMedia ??= new InstagramMediaRepository(_context);
     }
 
     public async Task<int> SaveAsync()

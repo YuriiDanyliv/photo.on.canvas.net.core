@@ -17,11 +17,18 @@ namespace POC.Web.Controllers
       _instaService = instaService;
     }
 
-    [HttpGet("GetStories")]
-    public async Task<ActionResult<List<InstagramMediaModel>>> GetStories([FromQuery] string storyName)
+    [HttpPost("GetStories")]
+    public async Task<ActionResult<IList<DAL.Entities.InstagramMedia>>> GetStories([FromForm] string name)
     {
-      var stories = await _instaService.GetStoriesByNameAsync(storyName);
-      return Ok(stories);
+      if (name == null) return Ok(await _instaService.GetStoriesAsync());
+      return Ok(await _instaService.GetStoriesAsync(name));
+    }
+
+    [HttpGet("UpdateDbInstaDataAsync")]
+    public async Task<ActionResult> UpdateDbInstaDataAsync()
+    {
+      await _instaService.UpdateDbInstaDataAsync();
+      return Ok();
     }
   }
 }

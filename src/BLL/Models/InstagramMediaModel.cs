@@ -2,7 +2,9 @@ namespace POC.BLL.Model
 {
   public class InstagramMediaModel
   {
-    public string ImageURL { get; set; }
-    public string VideoURL { get; set; }
+    public string StoryId { get; set; }
+    public string Title { get; set; }
+    public string ImageUri { get; set; }
+    public string VideoUri { get; set; }
   }
 }

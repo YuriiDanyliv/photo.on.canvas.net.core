@@ -11,12 +11,13 @@ namespace POC.BLL.Services
     {
     }
 
+    string path = $"Config//{typeof(T).Name}.json";
+
     public async Task<T> GetSettingsAsync()
     {
       T obj = default(T);
 
-      using (var fs = new FileStream(
-      $"Config//{typeof(T).Name}.json", FileMode.OpenOrCreate))
+      using (var fs = new FileStream(path, FileMode.OpenOrCreate))
       {
         if (fs.Length != 0)
         {
@@ -34,8 +35,7 @@ namespace POC.BLL.Services
         WriteIndented = true
       };
 
-      using (var fs = new FileStream(
-        $"Config//{typeof(T).Name}.json", FileMode.Create))
+      using (var fs = new FileStream(path, FileMode.Create))
       {
         await JsonSerializer.SerializeAsync<T>(fs, model, options);
       }

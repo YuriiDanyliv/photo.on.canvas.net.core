@@ -6,6 +6,7 @@ namespace POC.DAL.Interfaces
   {
     ICanvasRepository Canvas { get; }
     IOrderRepository Order { get; }
+    IInstagramMediaRepository InstaMedia { get; }
     IFileRepository File { get; }
     Task<int> SaveAsync();
   }

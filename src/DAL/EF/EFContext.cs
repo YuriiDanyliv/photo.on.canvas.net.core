@@ -17,11 +17,12 @@ namespace POC.DAL.Context
 
     public DbSet<Canvas> Canvas { get; set; }
     public DbSet<Order> Orders { get; set; }
+    public DbSet<InstagramMedia> InstagramMedias { get; set; }
     public DbSet<FileEntity> Files { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-      optionsBuilder.UseSqlServer(_config.GetConnectionString("AzureSQLServer"),
+      optionsBuilder.UseSqlServer(_config.GetConnectionString("SmartAsp"),
       cfg => cfg.MigrationsAssembly("POC.Web"));
     }
   }

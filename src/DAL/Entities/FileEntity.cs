@@ -8,6 +8,7 @@ namespace POC.DAL.Entities
   {
     public string FileName { get; set; }
     public string Folder { get; set; }
+    public string Category { get; set; }
     public string ContentType { get; set; }
   }
 }
