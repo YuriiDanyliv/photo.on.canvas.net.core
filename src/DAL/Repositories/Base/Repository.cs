@@ -2,56 +2,56 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using POC.DAL.Context;
-using POC.DAL.Interfaces;
 using POC.DAL.Models;
 using POC.DAL.Entities;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace POC.DAL.Repositories
 {
-  public abstract class Repository<T> : IBaseRepository<T> where T : BaseEntity
-  {
-    protected EFContext _context { get; set; }
-
-    public Repository(EFContext context)
+    public abstract class Repository<T> : IBaseRepository<T> where T : BaseEntity
     {
-      _context = context;
-    }
+        protected EFContext _context { get; set; }
 
-    public IQueryable<T> FindAll()
-    {
-      return _context.Set<T>().AsNoTracking();
-    }
+        protected Repository(EFContext context)
+        {
+            _context = context;
+        }
 
-    public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
-    {
-      return _context.Set<T>().Where(expression).AsNoTracking();
-    }
+        public async Task<IList<T>> FindAllAsync()
+        {
+            return await _context.Set<T>().AsNoTracking().ToListAsync();
+        }
 
-    public async Task<T> FindByIdAsync(string Id)
-    {
-      return await _context.Set<T>().FirstOrDefaultAsync(i => i.Id == Id);
-    }
+        public async Task<IList<T>> FindByConditionAsync(Expression<Func<T, bool>> expression)
+        {
+            return await _context.Set<T>().Where(expression).AsNoTracking().ToListAsync();
+        }
 
-    public virtual PagesList<T> GetByQueryParam(QueryParameters parameters)
-    {
-      return PagesList<T>.GetPagesList(FindAll(), parameters.PageNumber, parameters.PageSize);
-    }
+        public async Task<T> FindByIdAsync(string Id)
+        {
+            return await _context.Set<T>().FirstOrDefaultAsync(i => i.Id == Id);
+        }
 
-    public void Create(T entity)
-    {
-      var e = _context.Set<T>().Add(entity);
-    }
+        public virtual async Task<PagesList<T>> GetByQueryParamAsync(QueryParameters parameters)
+        {
+            var data = await FindAllAsync();
+            return PagesList<T>.GetPagesList(data, parameters);
+        }
 
-    public void Delete(T entity)
-    {
-      var e =_context.Set<T>().Remove(entity);
-    }
+        public void Create(T entity)
+        {
+            _context.Set<T>().Add(entity);
+        }
 
-    public void Update(T entity)
-    {
-      _context.Set<T>().Update(entity);
+        public void Delete(T entity)
+        {
+            _context.Set<T>().Remove(entity);
+        }
+
+        public void Update(T entity)
+        {
+            _context.Set<T>().Update(entity);
+        }
     }
-  }
 }

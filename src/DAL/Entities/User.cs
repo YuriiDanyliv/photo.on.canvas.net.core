@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace POC.DAL.Entities
 {
-  [Table("user")]
-  public class User : IdentityUser
-  {
-   
-  }
+    [Table("user")]
+    public class User : IdentityUser
+    {
+
+    }
 }
