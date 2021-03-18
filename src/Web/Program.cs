@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -9,42 +7,44 @@ using Microsoft.Extensions.Logging;
 using POC.BLL.Services;
 using POC.DAL.Entities;
 using POC.Web.Config;
+using System;
+using System.Threading.Tasks;
 
 namespace POC.Web
 {
-  public class Program
-  {
-    public static async Task Main(string[] args)
+    public static class Program
     {
-      var host = CreateHostBuilder(args).Build();
-
-      using (var scope = host.Services.CreateScope())
-      {
-        var services = scope.ServiceProvider;
-
-        try
+        public static async Task Main(string[] args)
         {
-          var userManager = services.GetRequiredService<UserManager<User>>();
-          var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-          var canvasService = services.GetRequiredService<ICanvasService>();
-          var config = services.GetRequiredService<IConfiguration>();
-          await DBInitializer.InitializeAsync(userManager, rolesManager, canvasService, config);
-        }
-        catch (Exception ex)
-        {
-          var logger = services.GetRequiredService<ILogger<Program>>();
-          logger.LogError(ex, "An error occurred while seeding the database.");
-        }
-      }
+            var host = CreateHostBuilder(args).Build();
 
-      host.Run();
-    }
-
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
+            using (var scope = host.Services.CreateScope())
             {
-              webBuilder.UseStartup<Startup>();
-            });
-  }
+                var services = scope.ServiceProvider;
+
+                try
+                {
+                    var userManager = services.GetRequiredService<UserManager<User>>();
+                    var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    var canvasService = services.GetRequiredService<ICanvasService>();
+                    var config = services.GetRequiredService<IConfiguration>();
+                    await DBInitializer.InitializeAsync(userManager, rolesManager, canvasService, config);
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Startup>>();
+                    logger.LogError(ex, "An error occurred while seeding the database.");
+                }
+            }
+
+            host.Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+    }
 }

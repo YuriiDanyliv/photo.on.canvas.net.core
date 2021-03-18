@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using POC.DAL.Models;
 using POC.DAL.Entities;
 using System.Threading.Tasks;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace POC.DAL.Repositories
 {
@@ -18,14 +18,14 @@ namespace POC.DAL.Repositories
             _context = context;
         }
 
-        public async Task<IList<T>> FindAllAsync()
+        public IQueryable<T> FindAll()
         {
-            return await _context.Set<T>().AsNoTracking().ToListAsync();
+            return _context.Set<T>().AsNoTracking();
         }
 
-        public async Task<IList<T>> FindByConditionAsync(Expression<Func<T, bool>> expression)
+        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
         {
-            return await _context.Set<T>().Where(expression).AsNoTracking().ToListAsync();
+            return _context.Set<T>().Where(expression).AsNoTracking();
         }
 
         public async Task<T> FindByIdAsync(string Id)
@@ -35,8 +35,8 @@ namespace POC.DAL.Repositories
 
         public virtual async Task<PagesList<T>> GetByQueryParamAsync(QueryParameters parameters)
         {
-            var data = await FindAllAsync();
-            return PagesList<T>.GetPagesList(data, parameters);
+            var data = FindAll();
+            return await PagesList<T>.GetPagesListAsync(data, parameters);
         }
 
         public void Create(T entity)

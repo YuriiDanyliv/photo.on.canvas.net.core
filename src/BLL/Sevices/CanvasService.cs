@@ -1,36 +1,55 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
+using BLL.Mapper;
+using Microsoft.EntityFrameworkCore;
+using POC.BLL.Dto;
 using POC.DAL.Entities;
-using POC.DAL.Interfaces;
+using POC.DAL.Repositories;
 
 namespace POC.BLL.Services
 {
-  public class CanvasService : ICanvasService
-  {
-    private readonly IUnitOfWork _unitOfWork;
-
-    public CanvasService(IUnitOfWork unitOfWork)
+    public class CanvasService : ICanvasService
     {
-      _unitOfWork = unitOfWork;
-    }
+        private readonly IUnitOfWork _unitOfWork;
 
-    public async Task CreateCanvasAsync(Canvas canvas)
-    {
-      _unitOfWork.Canvas.Create(canvas);
-      await _unitOfWork.SaveAsync();
-    }
+        public CanvasService(
+            IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
 
-    public async Task DeleteCanvasByIdAsync(string Id)
-    {
-      var canvas = await _unitOfWork.Canvas.FindByIdAsync(Id);
-      _unitOfWork.Canvas.Delete(canvas);
-      await _unitOfWork.SaveAsync();
-    }
+        /// <inheritdoc/>
+        public async Task CreateCanvasAsync(CreateCanvasDto canvasDto)
+        {
+            var canvas = ObjMapper.Map<CreateCanvasDto, Canvas>(canvasDto);
+            _unitOfWork.Canvas.Create(canvas);
+            await _unitOfWork.SaveAsync();
+        }
 
-    public IQueryable<Canvas> GetCanvas()
-    {
-      var result = _unitOfWork.Canvas.FindAll();
-      return result;
+        /// <inheritdoc/>
+        public async Task DeleteCanvasByIdAsync(string Id)
+        {
+            var canvas = await _unitOfWork.Canvas.FindByIdAsync(Id);
+
+            if (canvas != null)
+            {
+                _unitOfWork.Canvas.Delete(canvas);
+                await _unitOfWork.SaveAsync();
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task<IList<CanvasDto>> GetCanvasesAsync()
+        {
+            var result = await _unitOfWork.Canvas
+                .FindAll()
+                .ProjectTo<CanvasDto>(ObjMapper.configuration)
+                .OrderBy(x => x.Price)
+                .ToListAsync();
+
+            return result;
+        }
     }
-  }
 }

@@ -1,7 +1,7 @@
 namespace POC.BLL.Models
 {
-  public interface IConfigurationModel
-  {
-    
-  }
+    public interface IConfigurationModel
+    {
+
+    }
 }

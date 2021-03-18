@@ -1,56 +1,48 @@
-﻿using System.IO;
-using System.Threading.Tasks;
+﻿using BLL.Mapper;
+using POC.BLL.Dto;
 using POC.BLL.Models;
 using POC.DAL.Entities;
-using POC.DAL.Interfaces;
 using POC.DAL.Models;
+using POC.DAL.Repositories;
+using System.Threading.Tasks;
 
 namespace POC.BLL.Services
 {
-  public class OrderService : IOrderService
-  {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IFileService _fileService;
-
-    public OrderService(IUnitOfWork unitOfWork, IFileService fileService)
+    public class OrderService : IOrderService
     {
-      _unitOfWork = unitOfWork;
-      _fileService = fileService;
-    }
+        private readonly IUnitOfWork _unitOfWork;
 
-    public async Task DeleteOrderByIdAsync(string Id)
-    {
-      var order = await _unitOfWork.Order.FindByIdAsync(Id);
-      _unitOfWork.Order.Delete(order);
-      await _unitOfWork.SaveAsync();
-    }
-
-    public PagesList<Order> GetOrderPagesList(OrderParameters parameters)
-    {
-      return _unitOfWork.Order.GetByQueryParam(parameters);
-    }
-
-    public async Task MakeOrderAsync(CreateOrder order)
-    {
-      var canvas = await _unitOfWork.Canvas.FindByIdAsync(order.CanvasId);
-
-      byte[] imageData = null;
-      using (var binaryReader = new BinaryReader(order.Image.OpenReadStream()))
-      {
-        imageData = binaryReader.ReadBytes((int)order.Image.Length);
-      }
-
-      _unitOfWork.Order.Create(
-        new Order
+        public OrderService(
+            IUnitOfWork unitOfWork)
         {
-          CustomerName = order.CustomerName,
-          Address = order.Address,
-          PhoneNumber = order.PhoneNumber,
-          Canvas = canvas,
-          Image = imageData,
+            _unitOfWork = unitOfWork;
         }
-      );
-      await _unitOfWork.SaveAsync();
+
+        /// <inheritdoc/>
+        public async Task DeleteOrderByIdAsync(string Id)
+        {
+            var order = await _unitOfWork.Order.FindByIdAsync(Id);
+            _unitOfWork.Order.Delete(order);
+            await _unitOfWork.SaveAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task<PagesListModel<OrderDto>> GetOrderPagesListAsync(OrderQueryParameters parameters)
+        {
+            var ordersList = await _unitOfWork.Order.GetByQueryParamAsync(parameters);
+            var result = ObjMapper.Map<PagesList<Order>, PagesListModel<OrderDto>>(ordersList);
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public async Task MakeOrderAsync(CreateOrderDto orderDto)
+        {
+            var order = ObjMapper.Map<CreateOrderDto, Order>(orderDto);
+            //order.Canvas = await _unitOfWork.Canvas.FindByIdAsync(orderDto.CanvasId);
+
+            _unitOfWork.Order.Create(order);
+            await _unitOfWork.SaveAsync();
+        }
     }
-  }
 }

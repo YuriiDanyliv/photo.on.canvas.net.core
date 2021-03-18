@@ -1,7 +1,7 @@
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using POC.DAL.Entities;
 using POC.DAL.Models;
+using System.Threading.Tasks;
 
 namespace POC.DAL.Repositories
 {
@@ -13,8 +13,10 @@ namespace POC.DAL.Repositories
 
         public override async Task<PagesList<Order>> GetByQueryParamAsync(QueryParameters parameters)
         {
-            var orders = await _context.Set<Order>().AsNoTracking().Include(order => order.Canvas).ToListAsync();
-            return PagesList<Order>.GetPagesList(orders, parameters);
+            var orders = _context.Set<Order>().AsNoTracking().Include(order => order.Canvas);
+            return await PagesList<Order>.GetPagesListAsync(orders, parameters);
+
+
         }
     }
 }

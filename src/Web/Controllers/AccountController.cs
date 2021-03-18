@@ -1,144 +1,153 @@
-using System.Threading.Tasks;
-using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using POC.BLL.DTO;
-using POC.Web.ViewModel;
-using Microsoft.AspNetCore.Authorization;
+using POC.BLL.Dto;
 using POC.BLL.Models;
 using POC.BLL.Services;
+using System.Threading.Tasks;
 
 namespace POC.Web.Controllers
 {
-  [Route("api/[controller]")]
-  [ApiController]
-  [Authorize]
-  public class AccountController : Controller
-  {
-    private readonly ILogger<AccountController> _logger;
-    private readonly IAccountService _accountService;
-    private readonly IEmailConfirmService _emailConfirmService;
-    private readonly IMapper _mapper;
-    private readonly IConfigurationService<EmailServiceConfig> _configService;
-
-    public AccountController(
-      ILogger<AccountController> logger,
-      IAccountService accounService,
-      IEmailConfirmService emailConfirmService,
-      IConfigurationService<EmailServiceConfig> configService,
-      IMapper mapper)
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize]
+    public class AccountController : Controller
     {
-      _configService = configService;
-      _logger = logger;
-      _accountService = accounService;
-      _emailConfirmService = emailConfirmService;
-      _mapper = mapper;
-    }
+        private readonly IAccountService _accountService;
+        private readonly IEmailConfirmService _emailConfirmService;
+        private readonly IConfigurationService<EmailServiceConfig> _configService;
 
-    [HttpGet("GetUsers")]
-    [Authorize(Roles = "admin")]
-    public ActionResult<PagesVM<UserDTO>> GetUsers([FromQuery] UserQueryParam param)
-    {
-      var result = _mapper.Map<PagesVM<UserDTO>>(_accountService.GetUsers(param));
-
-      return Ok(result);
-    }
-
-    [HttpDelete("DeleteUser")]
-    [Authorize(Roles = "admin")]
-    public async Task<ActionResult<IdentityResult>> DeleteUser([FromBody] string userId)
-    {
-      var result = await _accountService.DeleteUserAsync(userId);
-      if (result.Succeeded) return Ok(result);
-      
-      return BadRequest(result.Errors);
-    }
-
-    [HttpPost("Register")]
-    [AllowAnonymous]
-    public async Task<ActionResult<IdentityResult>> Register([FromBody] RegisterViewModel model)
-    {
-      if (!ModelState.IsValid) return BadRequest(ModelState);
-
-      var mappedModel = _mapper.Map<UserAuthDTO>(model);
-      IdentityResult result = await _accountService.RegisterAsync(mappedModel);
-
-      if (result.Succeeded)
-      {
-        var emailConfig = await _configService.GetSettingsAsync();
-        if (emailConfig.ServiceIsOn)
+        public AccountController(
+          IAccountService accounService,
+          IEmailConfirmService emailConfirmService,
+          IConfigurationService<EmailServiceConfig> configService)
         {
-          await _emailConfirmService.SendConfirmEmailAsync(mappedModel, Url);
-          return Ok("follow the link provided in the email");
+            _configService = configService;
+            _accountService = accounService;
+            _emailConfirmService = emailConfirmService;
         }
-        return Ok(result);
-      }
 
-      return BadRequest(result.Errors);
+        /// <summary>
+        /// Get users with pagination info
+        /// </summary>
+        /// <param name="param">page size and page number</param>
+        /// <returns></returns>
+        [HttpGet("GetUsers")]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<PagesListModel<UserDto>>> GetUsers([FromQuery] UserQueryParam param)
+        {
+            var result = await _accountService.GetUsersAsync(param);
+            if (result == null || result.data == null || result.data.Length == 0) return NoContent();
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Delete user by ID
+        /// </summary>
+        /// <param name="userId"> user ID</param>
+        /// <returns></returns>
+        [HttpDelete("DeleteUser")]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<IdentityResult>> DeleteUser([FromForm] string userId)
+        {
+            if (userId == null) return BadRequest("Invalid user id");
+            var result = await _accountService.DeleteUserAsync(userId);
+            if (!result.Succeeded) return BadRequest(result.Errors);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Create new user
+        /// </summary>
+        /// <param name="user">user data</param>
+        /// <returns></returns>
+        [HttpPost("Register")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IdentityResult>> Register([FromForm] UserAuthDto user)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            IdentityResult result = await _accountService.RegisterAsync(user);
+            if (!result.Succeeded) BadRequest(result.Errors);
+
+            var emailConfig = await _configService.GetSettingsAsync();
+            if (emailConfig.EmailConfirmIsOn) return Ok("follow the link provided in the email");
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Confirm email address
+        /// </summary>
+        /// <param name="userId">user ID</param>
+        /// <param name="token">token</param>
+        /// <returns></returns>
+        [HttpGet("ConfirmEmail")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IdentityResult>> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null) return BadRequest("Error: user Id == null or token == null");
+
+            var result = await _emailConfirmService.ConfirmEmailAsync(userId, token);
+            if (result.Succeeded) return Ok("Email Confirmed");
+
+            return BadRequest(result.Errors);
+        }
+
+        /// <summary>
+        /// Sign in
+        /// </summary>
+        /// <param name="user">user data</param>
+        /// <returns></returns>
+        [HttpPost("Login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<string>> Login([FromForm] UserAuthDto user)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var emailConfig = await _configService.GetSettingsAsync();
+            if (emailConfig.EmailConfirmIsOn)
+            {
+                var isEmailConfirmed = await _emailConfirmService.ValidateConfirmedEmailAsync(user);
+                if (!isEmailConfirmed) return BadRequest(new { msg = "Email not confirmed" });
+            }
+
+            var result = await _accountService.LoginAsync(user);
+            if (result.SignInResult.Succeeded) return Ok(result.Jwt);
+
+            return BadRequest(result.SignInResult);
+        }
+
+        /// <summary>
+        /// Check if user have an admin role
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("IsAdmin")]
+        public ActionResult<bool> IsAdmin()
+        {
+            return (User.IsInRole("admin"));
+        }
+
+        /// <summary>
+        /// Check if user authenticated
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("isAuthenticated")]
+        [AllowAnonymous]
+        public ActionResult<bool> isAuthenticated()
+        {
+            return Ok(User.Identity.IsAuthenticated);
+        }
+
+        /// <summary>
+        /// Logout
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("Logout")]
+        public async Task<ActionResult> Logout()
+        {
+            await _accountService.LogoutAsync();
+            return Ok();
+        }
     }
-
-    [HttpGet("ConfirmEmail")]
-    [AllowAnonymous]
-    public async Task<ActionResult<IdentityResult>> ConfirmEmail(string userId, string token)
-    {
-      if (userId == null || token == null) return BadRequest("Error: user Id == null or token == null");
-
-      var result = await _emailConfirmService.ConfirmEmailAsync(userId, token);
-      if (result.Succeeded) return Ok("Email Confirmed");
-
-      return BadRequest(result.Errors);
-    }
-
-    [HttpPost("Login")]
-    [AllowAnonymous]
-    public async Task<ActionResult<string>> Login([FromBody] LoginViewModel model)
-    {
-      if (!ModelState.IsValid) return BadRequest(ModelState);
-      var mappedModel = _mapper.Map<UserAuthDTO>(model);
-
-      var emailConfig = await _configService.GetSettingsAsync();
-      if (emailConfig.ServiceIsOn)
-      {
-        var isEmailConfirmed = await _emailConfirmService.ValidateConfirmedEmailAsync(mappedModel);
-        if (!isEmailConfirmed) return BadRequest(new { msg = "Email not confirmed" });
-      }
-
-      var result = await _accountService.LoginAsync(mappedModel);
-      if (result.SignInResult.Succeeded) return Ok(result.Jwt);
-
-      return BadRequest(result.SignInResult);
-    }
-
-    [HttpGet("IsAdmin")]
-    public ActionResult<bool> IsAdmin()
-    {
-      return (User.IsInRole("admin") ? Ok(true) : Ok(false));
-    }
-
-    [HttpGet("isAuthenticated")]
-    [AllowAnonymous]
-    public ActionResult<bool> isAuthenticated()
-    {
-      return (User.Identity.IsAuthenticated ? Ok(true) : Ok(false));
-    }
-
-    [HttpGet("GetUserData")]
-    public ActionResult<object> GetUserData()
-    {
-      var data = new 
-      {
-        username = User.Identity.Name,
-      };
-
-      return Ok(data);
-    }
-
-    [HttpPost("Logout")]
-    public async Task<ActionResult> Logout()
-    {
-      await _accountService.LogoutAsync();
-      return Ok();
-    }
-  }
 }

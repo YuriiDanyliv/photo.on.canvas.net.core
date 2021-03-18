@@ -1,91 +1,79 @@
-using System.Threading.Tasks;
-using POC.DAL.Models;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Logging;
 using MimeKit;
 using POC.BLL.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace POC.BLL.Services
 {
-  public class EmailSenderService : IEmailSenderService
-  {
-    private readonly IConfigurationService<EmailServiceConfig> _cfgService;
-
-    public EmailSenderService(IConfigurationService<EmailServiceConfig> cfgService)
+    public class EmailSenderService : IEmailSenderService
     {
-      _cfgService = cfgService;
-    }
+        private readonly IConfigurationService<EmailServiceConfig> _cfgService;
+        private readonly ILogger<EmailSenderService> _logger;
 
-    // public void SendEmail(EmailMessage message)
-    // {
-    //   var emailMessage = CreateEmailMessage(message);
-    //   Send(emailMessage);
-    // }
-
-    public async Task SendEmailAsync(EmailMessage message)
-    {
-      var mailMessage = await CreateEmailMessage(message);
-      await SendAsync(mailMessage);
-    }
-
-    private async Task<MimeMessage> CreateEmailMessage(EmailMessage message)
-    {
-      var _emailConfig = await _cfgService.GetSettingsAsync();
-      var emailMessage = new MimeMessage();
-      emailMessage.From.Add(new MailboxAddress(_emailConfig.From));
-      emailMessage.To.AddRange(message.To);
-      emailMessage.Subject = message.Subject;
-      emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = message.Content };
-
-      return emailMessage;
-    }
-
-    // private void Send(MimeMessage mailMessage)
-    // {
-    //   using (var client = new SmtpClient())
-    //   {
-    //     try
-    //     {
-    //       client.Connect(_emailConfig.SmtpServer, _emailConfig.Port, true);
-    //       client.AuthenticationMechanisms.Remove("XOAUTH2");
-    //       client.Authenticate(_emailConfig.UserName, _emailConfig.Password);
-
-    //       client.Send(mailMessage);
-    //     }
-    //     catch
-    //     {
-    //       throw new System.Exception("Fail to send email");
-    //     }
-    //     finally
-    //     {
-    //       client.Disconnect(true);
-    //       client.Dispose();
-    //     }
-    //   }
-    // }
-
-    private async Task SendAsync(MimeMessage mailMessage)
-    {
-      var _emailConfig = await _cfgService.GetSettingsAsync();
-      using (var client = new SmtpClient())
-      {
-        try
+        public EmailSenderService(
+          IConfigurationService<EmailServiceConfig> cfgService,
+          ILogger<EmailSenderService> logger)
         {
-          await client.ConnectAsync(_emailConfig.SmtpServer, _emailConfig.Port, true);
-          client.AuthenticationMechanisms.Remove("XOAUTH2");
-          await client.AuthenticateAsync(_emailConfig.UserName, _emailConfig.Password);
+            _cfgService = cfgService;
+            _logger = logger;
+        }
 
-          await client.SendAsync(mailMessage);
-        }
-        catch
+        /// <inheritdoc/>
+        public async Task SendEmailAsync(EmailMessage message)
         {
-          throw new System.Exception("Fail to send email");
+            var mailMessage = await CreateEmailMessage(message);
+            await SendAsync(mailMessage);
         }
-        finally
+
+        /// <summary>
+        /// Create message obj with MimeMessage type
+        /// </summary>
+        /// <param name="message">message</param>
+        /// <returns></returns>
+        private async Task<MimeMessage> CreateEmailMessage(EmailMessage message)
         {
-          await client.DisconnectAsync(true);
-          client.Dispose();
+            var _emailConfig = await _cfgService.GetSettingsAsync();
+
+            var emailMessage = new MimeMessage();
+
+            emailMessage.From.Add(new MailboxAddress(_emailConfig.From));
+            emailMessage.To.AddRange(message.To);
+            emailMessage.Subject = message.Subject;
+            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = message.Content };
+
+            return emailMessage;
         }
-      }
+
+        /// <summary>
+        /// Send message to emails
+        /// </summary>
+        /// <param name="message">message</param>
+        /// <returns></returns>
+        private async Task SendAsync(MimeMessage message)
+        {
+            var _emailConfig = await _cfgService.GetSettingsAsync();
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    await client.ConnectAsync(_emailConfig.SmtpServer, _emailConfig.Port, true);
+                    client.AuthenticationMechanisms.Remove("XOAUTH2");
+                    await client.AuthenticateAsync(_emailConfig.UserName, _emailConfig.Password);
+
+                    await client.SendAsync(message);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(0, ex, "Email send error");
+                }
+                finally
+                {
+                    await client.DisconnectAsync(true);
+                    client.Dispose();
+                }
+            }
+        }
     }
-  }
 }

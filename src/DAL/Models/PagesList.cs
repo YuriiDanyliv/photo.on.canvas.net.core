@@ -1,6 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace POC.DAL.Models
 {
@@ -24,10 +26,10 @@ namespace POC.DAL.Models
             AddRange(items);
         }
 
-        public static PagesList<T> GetPagesList(IEnumerable<T> source, QueryParameters param)
+        public static async Task<PagesList<T>> GetPagesListAsync(IQueryable<T> source, QueryParameters param)
         {
             var count = source.Count();
-            var items = source.Skip((param.PageNumber - 1) * param.PageSize).Take(param.PageSize).ToList();
+            var items = await source.Skip((param.PageNumber - 1) * param.PageSize).Take(param.PageSize).ToListAsync();
 
             return new PagesList<T>(items, count, param.PageNumber, param.PageSize);
         }
